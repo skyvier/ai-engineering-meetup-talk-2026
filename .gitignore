@@ -1,3 +1,5 @@
 node_modules/
 dist/
 .slidev/
+_to_delete/
+esikatselu-likimaarainen.pdf
