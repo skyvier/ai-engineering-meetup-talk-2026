@@ -15,5 +15,8 @@
   },
   "devDependencies": {
     "playwright-chromium": "^1.50.0"
+  },
+  "overrides": {
+    "fuse.js": "7.1.0"
   }
 }
