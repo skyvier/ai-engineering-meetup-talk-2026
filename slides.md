@@ -30,7 +30,7 @@ layout: cover
 
 <p class="speaker"><strong>Joonas Laukka</strong> · Senior Consultant, Loihde</p>
 
-<p class="aside-joke">Kolme determinististä tapaa rajata agentin työtä</p>
+<p class="aside-joke">Määrittele järjestelmä, eristä agentti, päästä se irti.</p>
 
 <img class="logo" src="/loihde-white.svg" alt="Loihde" />
 
@@ -41,7 +41,7 @@ Tervetuloa. Kaikki täällä ovat käyttäneet koodausagentteja, joten en esitte
 
 Kysymys tänään: miten agentille voi antaa enemmän vapautta niin, että kontrolli säilyy? Vastaukseni ei ole "älä anna". Vastaus on: päätä ensin, millä hyväksyt tuloksen, ja anna vapaus sen rajan sisällä.
 
-Tänään kolme determinististä tapaa rajata agentin työtä: tyypit, ominaisuustestit (property testing) ja hyväksymistestit (Gherkin). Kaikki kolme näytetään saman pienen esimerkin kautta: verkkokaupan alennus.
+Tänään kolme askelta: määrittele järjestelmä, eristä agentti tarkistuksesta ja päästä se irti. Järjestelmä määritellään kolmella deterministisellä tarkistuksella: tyypeillä, ominaisuustesteillä (property testing) ja hyväksymistesteillä (Gherkin). Esimerkkinä on verkkokaupan alennus.
 
 Tärkeä rajaus heti alkuun: emme aja agenttia livenä. Esimerkit ovat yksinkertaistettuja, ja agentin työnkulku näytetään demorepon asetuksista ja kehotteesta.
 -->
@@ -374,7 +374,7 @@ Miksi tämä toimii agentille:
 
 Rajaus: tyyppi pakottaa validoinnin tapahtumaan, se ei todista, että validointi on oikein. Oikeellisuus tulee testeistä.
 
-"Älä pyydä agenttia muistamaan. Tee unohtamisesta virhe." (Lause on Loihteen AI-natiivi kehitys -esityksestä.)
+"Älä pyydä agenttia muistamaan. Tee unohtamisesta virhe."
 -->
 
 ---
@@ -1035,33 +1035,12 @@ Tiivistys tähänastisesta yhteen lauseeseen: määrittele järjestelmä, älä 
 
 Kaikki kolme tarkistusta kuvaavat sitä, mitä järjestelmä lupaa: mitä voi olla olemassa, mikä pätee aina ja mitä tarpeen omistaja näkee. Yksikään niistä ei kerro, miten se tehdään. Se jää agentille, ja juuri siinä on agentin vapaus.
 
-Siirtymä: miten tämä käytännössä järjestetään agentin kanssa?
--->
-
----
-layout: center
-class: brand statement
----
-
-<div class="arrow">↗</div>
-
-<p class="kicker" style="color: var(--l-teal); font-size: 15px">Seuraavaksi</p>
-
-# Päästä agentti irti
-
-<p class="subtitle">Miten agentti toteuttaa määritellyn järjestelmän, ja miten tiedämme, että se onnistui.</p>
-
-<!--
-[21:45–22:00]
-
-Osa vaihtuu. Tähän asti määrittelimme järjestelmän: tyypit, ominaisuudet ja hyväksymiskriteerit. Nyt annetaan agentille vapaus toteuttaa se.
-
-Kaksi kysymystä tälle osalle: miten agentti pääsee työhön käsiksi niin, ettei se voi muuttaa sopimusta, ja miten tarkistamme tuloksen luottamatta agentin omaan "valmis"-ilmoitukseen.
+Siirtymä: toinen askel. Miten agentti eristetään tarkistuksesta?
 -->
 
 ---
 
-# Päästä agentti irti
+# Eristä agentti tarkistuksesta
 
 <p class="h1-sub"><span class="step">1 / 3</span> · Agentin työtila</p>
 
@@ -1125,9 +1104,9 @@ Agentti saa muuttaa toteutusta vapaasti, mutta <strong>ei sopimusta</strong>.
 </style>
 
 <!--
-[22:00–23:30]
+[21:45–23:15]
 
-Ensimmäinen asia: missä agentti työskentelee.
+Toinen askel: eristä agentti tarkistuksesta. Ensin: missä agentti työskentelee.
 
 Agentti saa oman kopion lähtötilasta. Puussa näkyy, mitä se saa kirjoittaa: vain src/implementation/ ja dist/. Kaikki muu on vain luku -tilassa: vaatimukset README:ssä, tyypit ja rajapinnat contracts.ts:ssä, validoivat konstruktorit, testit, skriptit ja kääntäjäasetukset. Rakenne on sama kuin demorepossa, nimet alennusesimerkistä. Verkko on pois, eikä agentti voi pyytää lisäoikeuksia.
 
@@ -1140,7 +1119,7 @@ Oikealla demorepon oikea profiili Codex CLI:lle, muotoiltu uudelleen luettavaksi
 
 ---
 
-# Päästä agentti irti
+# Eristä agentti tarkistuksesta
 
 <p class="h1-sub"><span class="step">2 / 3</span> · Ohje agentille</p>
 
@@ -1186,7 +1165,7 @@ Ohje kertoo säännöt. <strong>Työtila ja tarkistus</strong> pakottavat ne.
 </style>
 
 <!--
-[23:30–24:45]
+[23:15–24:30]
 
 Toinen asia: mitä agentille sanotaan.
 
@@ -1202,7 +1181,7 @@ Ohje yksin ei riitä. Siksi työtila lukitsee tiedostot ja tarkistus ajetaan eri
 
 ---
 
-# Päästä agentti irti
+# Eristä agentti tarkistuksesta
 
 <p class="h1-sub"><span class="step">3 / 3</span> · Luota tarkistukseen, ei raporttiin</p>
 
@@ -1233,7 +1212,7 @@ Valmis = agentti lopetti <strong>ja</strong> riippumaton tarkistus meni läpi. A
 </div>
 
 <!--
-[24:45–26:15]
+[24:30–26:00]
 
 Kolmas asia: miten tulos tarkistetaan.
 
@@ -1250,21 +1229,215 @@ Demorepossa tämä on yksi skripti: se tekee kopiot, käynnistää agentin rajat
 
 ---
 
+# Missä ihmisen työ on?
+
+<p class="h1-sub">Rakennustelineet ennen rakennusta</p>
+
+<svg class="diagram" viewBox="150 82 726 232" role="img" aria-label="Piirros: kaksi kypäräpäistä ihmistä rakentaa aitausta, jonka laidoissa lukee tyypit, ominaisuudet, hyväksymiskriteerit ja työtila. Ulos pääsee vain riippumattoman tarkistuksen portista. Aitauksen sisällä robotti istuu kannettavan ääressä ja kysyy: saanko jo aloittaa? Toinen ihminen kantaa uutta aitaelementtiä ja sanoo: hetki, vielä yksi laki.">
+  <!-- ground -->
+  <ellipse cx="500" cy="292" rx="335" ry="18" fill="#ECECEF"/>
+  <!-- the pen -->
+  <rect x="320" y="112" width="280" height="172" rx="6" fill="#41B4AF" fill-opacity="0.07" stroke="#866A9D" stroke-width="5"/>
+  <rect x="320" y="112" width="280" height="172" rx="6" fill="none" stroke="#fff" stroke-width="1.5"/>
+  <g fill="#50375F">
+    <rect x="313" y="105" width="14" height="14" rx="2"/><rect x="453" y="105" width="14" height="14" rx="2"/><rect x="593" y="105" width="14" height="14" rx="2"/>
+    <rect x="313" y="191" width="14" height="14" rx="2"/><rect x="593" y="191" width="14" height="14" rx="2"/>
+    <rect x="313" y="277" width="14" height="14" rx="2"/><rect x="453" y="277" width="14" height="14" rx="2"/><rect x="593" y="277" width="14" height="14" rx="2"/>
+  </g>
+  <!-- signs on the fence -->
+  <g fill="#fff" stroke="#866A9D" stroke-width="1.5">
+    <rect x="345" y="90" width="90" height="24" rx="4"/>
+    <rect x="482" y="90" width="104" height="24" rx="4"/>
+    <rect x="385" y="272" width="150" height="24" rx="4"/>
+    <rect x="560" y="142" width="80" height="24" rx="4"/>
+  </g>
+  <g fill="#50375F" font-weight="700" text-anchor="middle" style="font-size:12.5px">
+    <text x="390" y="106">Tyypit</text>
+    <text x="534" y="106">Ominaisuudet</text>
+    <text x="460" y="288">Hyväksymiskriteerit</text>
+    <text x="600" y="158">Työtila</text>
+  </g>
+  <!-- the gate: the only way out goes through independent verification -->
+  <rect x="546" y="279" width="40" height="10" rx="2" fill="#00847F"/>
+  <text x="566" y="306" text-anchor="middle" fill="#00847F" font-weight="700" style="font-size:11.5px">riippumaton tarkistus</text>
+  <!-- the robot -->
+  <line x1="460" y1="146" x2="460" y2="160" stroke="#00847F" stroke-width="3"/>
+  <circle cx="460" cy="143" r="5" fill="#F67B50"/>
+  <rect x="434" y="160" width="52" height="38" rx="9" fill="#41B4AF"/>
+  <circle cx="449" cy="177" r="6" fill="#fff"/><circle cx="471" cy="177" r="6" fill="#fff"/>
+  <circle cx="451" cy="178" r="2.6" fill="#192D2D"/><circle cx="473" cy="178" r="2.6" fill="#192D2D"/>
+  <path d="M449 189 Q460 196 471 189" fill="none" stroke="#192D2D" stroke-width="2.2" stroke-linecap="round"/>
+  <rect x="440" y="200" width="40" height="30" rx="6" fill="#00847F"/>
+  <rect x="428" y="216" width="64" height="34" rx="4" fill="#192D2D"/>
+  <text x="460" y="238" text-anchor="middle" fill="#41B4AF" font-weight="700" style="font-size:13px; font-family: ui-monospace, Menlo, monospace">{ }</text>
+  <rect x="420" y="250" width="80" height="6" rx="2" fill="#545459"/>
+  <!-- robot speech -->
+  <rect x="330" y="124" width="126" height="28" rx="14" fill="#fff" stroke="#192D2D" stroke-width="1.5"/>
+  <polygon points="430,151 442,151 446,162" fill="#fff" stroke="#192D2D" stroke-width="1.5" stroke-linejoin="round"/>
+  <rect x="429" y="148" width="14" height="4" fill="#fff"/>
+  <text x="393" y="142" text-anchor="middle" fill="#192D2D" style="font-size:12px">Saanko jo aloittaa?</text>
+  <!-- human 1: hammering a post -->
+  <g stroke="#1A1A1D" stroke-width="2.6" stroke-linecap="round" fill="none">
+    <circle cx="262" cy="176" r="12" fill="#fff"/>
+    <line x1="262" y1="188" x2="262" y2="236"/>
+    <line x1="262" y1="236" x2="250" y2="270"/><line x1="262" y1="236" x2="274" y2="270"/>
+    <line x1="262" y1="200" x2="248" y2="220"/>
+    <line x1="262" y1="200" x2="288" y2="186"/>
+    <line x1="288" y1="186" x2="300" y2="203"/>
+  </g>
+  <path d="M248 174 Q262 152 276 174 Z" fill="#F67B50"/>
+  <line x1="244" y1="174" x2="280" y2="174" stroke="#C4502A" stroke-width="3" stroke-linecap="round"/>
+  <rect x="293" y="196" width="18" height="10" rx="2" fill="#545459" transform="rotate(-35 302 201)"/>
+  <g stroke="#8A8A90" stroke-width="1.6" stroke-linecap="round" fill="none">
+    <path d="M300 214 q5 4 0 8"/><path d="M306 212 q6 5 0 11"/>
+  </g>
+  <!-- human 2: carrying another panel -->
+  <rect x="630" y="186" width="40" height="62" rx="3" fill="#F1EAF7" stroke="#866A9D" stroke-width="2"/>
+  <text x="650" y="213" text-anchor="middle" fill="#50375F" font-weight="700" style="font-size:11px">uusi</text>
+  <text x="650" y="227" text-anchor="middle" fill="#50375F" font-weight="700" style="font-size:11px">laki</text>
+  <g stroke="#1A1A1D" stroke-width="2.6" stroke-linecap="round" fill="none">
+    <circle cx="700" cy="176" r="12" fill="#fff"/>
+    <line x1="700" y1="188" x2="700" y2="236"/>
+    <line x1="700" y1="236" x2="688" y2="270"/><line x1="700" y1="236" x2="712" y2="270"/>
+    <line x1="700" y1="202" x2="672" y2="206"/>
+    <line x1="700" y1="212" x2="672" y2="226"/>
+  </g>
+  <path d="M686 174 Q700 152 714 174 Z" fill="#F67B50"/>
+  <line x1="682" y1="174" x2="718" y2="174" stroke="#C4502A" stroke-width="3" stroke-linecap="round"/>
+  <!-- human 2 speech -->
+  <rect x="664" y="108" width="190" height="28" rx="14" fill="#fff" stroke="#192D2D" stroke-width="1.5"/>
+  <polygon points="694,135 706,135 700,150" fill="#fff" stroke="#192D2D" stroke-width="1.5" stroke-linejoin="round"/>
+  <rect x="693" y="132" width="14" height="4" fill="#fff"/>
+  <text x="759" y="126" text-anchor="middle" fill="#192D2D" style="font-size:12px">Hetki, vielä yksi laki!</text>
+  <!-- labels -->
+  <g fill="#545459" text-anchor="middle" style="font-size:12px" font-style="italic">
+    <text x="262" y="306">ihminen rakentaa rajoja</text>
+    <text x="740" y="306">ihminen rakentaa lisää rajoja</text>
+  </g>
+</svg>
+
+<div class="callout teal" style="margin-top: 8px">
+Suurin osa ihmisen työstä ja huomiosta menee <strong>tarkistusten rakentamiseen</strong>. Agentin työ on kaikki aitauksen sisällä.
+</div>
+
+<!--
+[26:00–27:00]
+
+Mitä tämä tarkoittaa ihmisen työlle? Se siirtyy.
+
+Kun agentti kirjoittaa toteutuksen, ihmisen työ on rakennustelineet: tyypit, lait, hyväksymiskriteerit, työtilan rajat ja riippumaton tarkistus, joka on aitauksen ainoa portti ulos. Suurin osa työstä ja huomiosta menee sinne, ei toteutuksen kirjoittamiseen.
+
+Kuva on vähän kärjistetty: agentti istuu valmiina koneen ääressä ja kysyy, saako jo aloittaa, ja ihmiset kantavat vielä yhtä aitaelementtiä. Mutta juuri näin sen kuuluukin mennä: agentti saa aloittaa vasta, kun aitaus on pystyssä.
+
+Ja aitauksen sisällä agentti saa tehdä mitä haluaa. Se on agentin vapaus.
+
+Siirtymä: aitaus on valmis. Kolmas askel.
+-->
+
+---
+layout: center
+class: brand statement
+---
+
+<div class="arrow">↗</div>
+
+# Päästä agentti irti
+
+<p class="subtitle">Aitauksen sisällä agentti saa tehdä mitä haluaa. Ulos pääsee vain tarkistuksen portista.</p>
+
+<!--
+[27:00–27:15]
+
+Kolmas askel: päästä agentti irti.
+
+Robotti kysyi edellisessä kuvassa, saako se jo aloittaa. Nyt saa. Aitauksen sisällä agentti saa valita toteutuksen vapaasti ja kokeilla niin monta kertaa kuin haluaa. Ulos pääsee vain riippumattoman tarkistuksen kautta.
+
+Siirtymä: tässä sen tulos.
+-->
+
+---
+
+<span class="label-illustrative">Havainnollistus – keksitty PR</span>
+
+<div class="pr">
+<div class="pr-head">
+<span class="pr-state">● Open</span>
+<span class="pr-title">Implement campaign codes at checkout <span class="pr-num">#42</span></span>
+</div>
+<div class="pr-meta"><b>agent</b> wants to merge 1 commit into <code>main</code> from <code>agent/shop-42</code></div>
+<div class="pr-body">
+<p>Implements <code>applyCode()</code> against the agreed contract in <code>src/contracts.ts</code>. All checks pass. Done! ✅</p>
+</div>
+<div class="pr-grid">
+<div class="pr-checks">
+<div class="pr-checks-head">✓ All checks have passed</div>
+<div>✓ Build and type check</div>
+<div>✓ Property tests · 6 / 6</div>
+<div>✓ Acceptance tests · 2 scenarios</div>
+<div>✓ Independent verification in a fresh copy</div>
+</div>
+<div class="pr-files">
+<div class="pr-checks-head">2 files changed</div>
+<div><code>src/implementation/apply-code.ts</code> <span class="add">+187</span></div>
+<div><code>src/implementation/rounding.ts</code> <span class="add">+41</span></div>
+<div class="pr-merge">Merge pull request</div>
+</div>
+</div>
+</div>
+
+<div v-click class="pr-question">Mergeäisitkö tämän lukematta diffiä?</div>
+
+<style>
+.pr { margin-top: 10px; border: 1px solid var(--l-gray-300); border-radius: 10px; padding: 14px 18px; background: #fff; box-shadow: 0 4px 18px rgba(80, 55, 95, 0.07); font-size: 14px; }
+.pr-head { display: flex; align-items: center; gap: 12px; }
+.pr-state { background: #1F883D; color: #fff; border-radius: 999px; padding: 3px 12px; font-size: 13px; font-weight: 700; }
+.pr-title { font-size: 21px; font-weight: 700; color: var(--l-ink); }
+.pr-num { color: var(--l-gray-500); font-weight: 400; }
+.pr-meta { color: var(--l-gray-700); font-size: 13px; margin: 6px 0 10px; }
+.pr-body { border-top: 1px solid var(--l-gray-100); padding-top: 4px; }
+.slidev-layout .pr-body p { margin: 6px 0 10px; }
+.pr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.pr-checks, .pr-files { border: 1px solid var(--l-gray-100); border-radius: 8px; padding: 8px 12px; line-height: 1.6; }
+.pr-checks div { color: #1F883D; }
+.pr-checks-head { font-weight: 700; color: var(--l-ink) !important; margin-bottom: 2px; }
+.pr-files .add { color: #1F883D; font-weight: 700; font-size: 12.5px; }
+.pr-merge { display: inline-block; margin-top: 8px; background: #1F883D; color: #fff; border-radius: 6px; padding: 4px 12px; font-weight: 700; font-size: 13px; }
+.pr-question { margin-top: 18px; font-size: 34px; font-weight: 900; letter-spacing: -0.03em; color: var(--l-purple-dark); }
+</style>
+
+<!--
+[27:15–28:15]
+
+Kaikki on tehty oikein. Tyypit, ominaisuustestit ja hyväksymistestit on päätetty ennen delegointia. Agentti on kirjoittanut vain toteutushakemistoon. Tarkistukset on ajettu uudelleen tuoreessa kopiossa, ja kaikki ovat vihreänä. Ja agentti sanoo taas: "Done! ✅".
+
+PR on keksitty havainnollistus. Sanon tämän ääneen.
+
+[klikkaus] Mergeäisitkö tämän lukematta diffiä?
+
+Kysy salilta, kädet ylös. Anna hetki aikaa.
+
+Oma vastaukseni: se riippuu riskistä. Tarkistukset kertovat paljon, ja ne muuttavat sitä, mitä diffistä luetaan: enää ei tarkisteta, toimiiko alennus, vaan sitä, mitä tarkistukset eivät kata. Siihen seuraava dia.
+-->
+
+---
+
 # Mitä vihreä tulos ei kerro?
 
-<div class="cols" style="margin-top: 8px; gap: 16px">
+<div class="cols-3 small" style="margin-top: 8px; gap: 12px">
 <div class="card accent"><h2>Ovatko vaatimukset oikeat?</h2>Tarkistukset tarkistavat sen, mitä kirjoitimme. Eivät sitä, mitä olisi pitänyt kirjoittaa.</div>
 <div class="card accent"><h2>Mitä ei ole katettu?</h2>Mitä sopimus ja lait eivät mainitse, sitä ei ole tarkistettu. Generaattorit tuottavat vain sen, mitä niille kerrottiin.</div>
 <div class="card accent"><h2>Luotammeko suoritukseen?</h2>Ehdokaskoodi ajetaan samassa prosessissa kuin testit. Kielletyt pakotiet, kuten <code>as</code> ja <code>any</code>, nojaavat ohjeeseen ja katselmointiin.</div>
 <div class="card accent"><h2>Onko tämä tuotantoa?</h2>Vihreä kertoo, että koodatut odotukset täyttyivät. Ei sitä, että järjestelmä on valmis tuotantoon.</div>
+<div class="card teal"><h2>Onko koodi ylläpidettävää?</h2>Onko se helppo ymmärtää ja muuttaa? Seuraako se tiimin tapoja? Toimiiko se riittävän nopeasti?</div>
+<div class="card teal"><h2>Onko ratkaisu järkevä?</h2>Onko se turhan monimutkainen? Toiko se uusia riippuvuuksia? Sopiiko se muuhun arkkitehtuuriin?</div>
 </div>
 
 <div class="callout teal" style="margin-top: 20px">
-Mekanismit <strong>riskin mukaan</strong>. Pieneen tehtävään riittää vähemmän, kriittiseen tarvitaan enemmän.
+Tarkistukset eivät poista katselmointia. Ne kertovat, <strong>mihin</strong> katselmointi kannattaa käyttää.
 </div>
 
 <!--
-[26:15–27:30]
+[28:15–29:15]
 
 Nopea rehellisyyskierros. Vihreä tarkoittaa: koodatut odotukset täyttyivät. Ei enempää.
 
@@ -1272,8 +1445,55 @@ Nopea rehellisyyskierros. Vihreä tarkoittaa: koodatut odotukset täyttyivät. E
 - Kattavuus: mitä sopimus ja lait eivät mainitse, sitä ei ole tarkistettu. Ominaisuustestien generaattorit tuottavat vain sen, mitä niille kerrottiin.
 - Luottamus suoritukseen: ehdokas ajetaan samassa prosessissa kuin testit. Se voisi esimerkiksi lopettaa testiprosessin aikaisin. Ja TypeScriptin pakotiet, as, any ja @ts-ignore, nojaavat ohjeeseen ja katselmointiin, ellei lint-sääntö valvo niitä. Tämä on rajojen demo, ei suojaus vihamielistä koodia vastaan.
 - Tuotanto: vihreä ei väitä tuotantovalmiutta.
+- Ei-toiminnalliset vaatimukset: onko koodi ylläpidettävää, helppo ymmärtää ja muuttaa, seuraako se tiimin tapoja, onko se riittävän nopea. Onko ratkaisu järkevä: ei turhaa monimutkaisuutta, ei uusia riippuvuuksia ilman syytä, sopii muuhun arkkitehtuuriin. Tarkistukset eivät kerro näistä mitään, ellei niitä ole erikseen kirjoitettu tarkistuksiksi, esimerkiksi lint- tai arkkitehtuurisäännöiksi. Muuten ne jäävät katselmoinnille. Juuri tähän diffiä luetaan.
 
-Kolme kopiota, käyttöoikeusprofiilit, tyypit, ominaisuustestit ja hyväksymistestit on paljon. Mekanismit valitaan riskin mukaan.
+Siirtymä: kuinka paljon huomiota yksittäinen muutos sitten ansaitsee?
+-->
+
+---
+
+# Kuinka paljon huomiota muutos ansaitsee?
+
+<div class="att-head"><span>vähemmän huomiota</span><span>enemmän huomiota</span></div>
+<div class="att-bar"></div>
+
+<div class="att-row"><b>Verifioitavuus</b><span>tarkistukset kattavat muutoksen</span><span>ei koneellisesti tarkistettavissa</span></div>
+<div class="att-row"><b>Vaikutusalue</b><span>yksi sisäinen moduuli</span><span>maksut, tietoturva, data</span></div>
+<div class="att-row"><b>Peruttavuus</b><span>yksi revert, feature flag</span><span>migraatio, lähetetty viesti</span></div>
+<div class="att-row"><b>Uutuus</b><span>toistuva, tuttu muutos</span><span>uusi arkkitehtuuripäätös</span></div>
+
+<div class="callout teal" style="margin-top: 22px; font-size: 20px">
+Mitoita ihmisen huomio <strong>muutoksen</strong> mukaan, ei sen mukaan, kuka sen kirjoitti.
+</div>
+
+<style>
+.att-row { display: grid; grid-template-columns: 190px 1fr 1fr; gap: 16px; align-items: center; }
+.att-head { display: flex; justify-content: space-between; margin-left: 206px; }
+.att-bar { height: 12px; border-radius: 6px; margin: 6px 0 4px 206px; background: linear-gradient(90deg, var(--l-teal) 0%, var(--l-purple-50) 50%, var(--l-red) 100%); }
+.att-head { margin-top: 18px; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.att-head span:nth-child(1) { color: var(--l-teal-deep); }
+.att-head span:nth-child(2) { color: #C4502A; }
+.att-row { border-bottom: 1px solid var(--l-gray-100); padding: 13px 0; font-size: 19px; line-height: 1.25; }
+.att-row b { font-size: 21px; }
+.att-row b { color: var(--l-purple-dark); }
+.att-row span:nth-of-type(1) { color: var(--l-gray-700); }
+.att-row span:nth-of-type(2) { color: var(--l-gray-700); text-align: right; }
+</style>
+
+<!--
+[29:15–30:30]
+
+Viimeinen ajatus ennen yhteenvetoa: kuinka paljon ihmisen huomiota yksittäinen muutos ansaitsee?
+
+Ei aina samaa määrää. Neljä kysymystä:
+- Verifioitavuus: kattavatko tarkistukset muutoksen, vai onko siinä semantiikkaa, jota ei voi tarkistaa koneellisesti?
+- Vaikutusalue: mitä rikkoutuu, jos muutos on väärin? Yksi sisäinen moduuli vai maksut ja asiakkaiden data?
+- Peruttavuus: voiko muutoksen perua yhdellä revertillä tai feature flagilla, vai onko se tietokantamigraatio tai jo lähetetty sähköposti?
+- Uutuus: onko tämä tuttu, toistuva muutos vai uusi arkkitehtuuripäätös?
+
+Mitä enemmän oikealle, sitä enemmän ihmisen huomiota: tarkempi katselmointi, vaiheistettu käyttöönotto, canary-julkaisu, toinen katselmoija.
+
+Tämä vastaa myös PR-dian kysymykseen. Mergeäisitkö lukematta? Riippuu siitä, missä kohtaa näitä janoja muutos on.
 -->
 
 ---
@@ -1282,37 +1502,32 @@ class: brand
 
 <div class="arrow">↗</div>
 
-# Mitä haluat päättää ennen delegointia?
+# Kolme askelta
 
 <ul class="big-questions">
-<li><span>1</span>Mitä pitää tapahtua?</li>
-<li><span>2</span>Mitä ei saa tapahtua?</li>
-<li><span>3</span>Millä hyväksymme tuloksen?</li>
+<li><span>1</span>Määrittele järjestelmä, älä toteutusta</li>
+<li><span>2</span>Eristä agentti tarkistuksesta</li>
+<li><span>3</span>Päästä agentti irti</li>
 </ul>
 
-<p style="margin-top: 22px; font-size: 22px; font-weight: 700">Älä pyydä agenttia muistamaan. Tee unohtamisesta virhe.</p>
+<p class="closing-thanks">Kiitos! Kysymyksiä?</p>
 
-<p style="margin-top: 10px; font-size: 18px">Mekanismit <strong>riskin mukaan</strong>, ei kaikkea kaikkialle.</p>
-
-<p style="margin-top: 18px; font-size: 15px">Demo: <a href="https://github.com/skyvier/verification-driven-ai-demo">github.com/skyvier/verification-driven-ai-demo</a></p>
-
-<p class="aside-joke">Kiitos. Kysymyksiä?</p>
+<style>
+.slidev-layout.brand .big-questions li { font-size: 36px; margin: 16px 0 !important; }
+.slidev-layout .closing-thanks { margin-top: 40px; font-size: 30px; font-weight: 700; color: var(--l-teal); }
+</style>
 
 <img class="logo" src="/loihde-white.svg" alt="Loihde" />
 
 <!--
-[27:30–28:30, sitten kysymykset]
+[30:30–31:30, sitten kysymykset]
 
-Kolme kysymystä, joihin kannattaa vastata ennen kuin agentti saa vapauden:
-1. Mitä pitää tapahtua? → esimerkit ja säännöt.
-2. Mitä ei saa tapahtua? → negatiiviset tapaukset, rajat, kirjoitusoikeudet.
-3. Millä hyväksymme tuloksen? → riippumaton varmennus, ja ihminen arvioi, mitä näyttö kertoo ja mitä jää tuntemattomaksi.
+Kolme askelta tiivistettynä:
+1. Määrittele järjestelmä, älä toteutusta: tyypit, ominaisuudet ja hyväksymiskriteerit kertovat, mitä järjestelmä lupaa.
+2. Eristä agentti tarkistuksesta: agentti kirjoittaa vain toteutusta, ja tarkistus ajetaan uudelleen tuoreessa kopiossa.
+3. Päästä agentti irti: aitauksen sisällä agentti saa tehdä mitä haluaa.
 
-Viisi vaihetta tiivistettynä: tarkoitus → odotukset ajettaviksi tarkistuksiksi → selkeä toteutusraja → riippumaton varmennus → arvio siitä, mitä näyttö osoittaa.
+Jos aikaa jää, paluu tyyppiosion lauseeseen: "Älä pyydä agenttia muistamaan. Tee unohtamisesta virhe." Sama pätee kaikkiin kolmeen: jokainen sovittu laki, joka on kirjoitettu tarkistukseksi, on yksi asia vähemmän, jonka agentin pitää muistaa.
 
-Paluu tyyppiosion lauseeseen: "Älä pyydä agenttia muistamaan. Tee unohtamisesta virhe." Sama pätee kaikkiin kolmeen: jokainen sovittu laki, joka on kirjoitettu tarkistukseksi, on yksi asia vähemmän, jonka agentin pitää muistaa.
-
-Mekanismit riskin mukaan: pieneen tehtävään riittää vähemmän, kriittiseen tarvitaan enemmän.
-
-Ajoitus: tähän mennessä noin 28–29 min. Sitten kysymykset.
+Ajoitus: tähän mennessä noin 31 min. Sitten kysymykset.
 -->

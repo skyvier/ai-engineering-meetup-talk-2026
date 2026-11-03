@@ -56,10 +56,13 @@ The talk targets about 30 minutes; a little shorter or longer is fine. Each slid
 | 14 | Rajataan hyväksyttävien ohjelmien joukkoa | –16:30 |
 | 15–18 | Mistä tarkistukset tulevat? (yleiskuva, kriteerit, ominaisuudet, tyypit) | –21:30 |
 | 19 | Määrittele järjestelmä, älä toteutusta | –21:45 |
-| 20 | Päästä agentti irti (osion otsikko) | –22:00 |
-| 21–23 | Agentin työtila, ohje agentille, luota tarkistukseen | –26:15 |
-| 24 | Mitä vihreä tulos ei kerro? | –27:30 |
-| 25 | Mitä haluat päättää ennen delegointia? | –28:30 |
+| 20–22 | Eristä agentti tarkistuksesta: työtila, ohje, riippumaton tarkistus | –26:00 |
+| 23 | Missä ihmisen työ on? (piirros) | –27:00 |
+| 24 | Päästä agentti irti | –27:15 |
+| 25 | Agentin PR: mergeäisitkö lukematta diffiä? | –28:15 |
+| 26 | Mitä vihreä tulos ei kerro? | –29:15 |
+| 27 | Kuinka paljon huomiota muutos ansaitsee? | –30:30 |
+| 28 | Kolme askelta (lopetus) | –31:30 |
 
 All code examples use an invented web-shop discount example and are labelled on the slides (simplified example or illustration). The agent workflow slides show the demo repository's structure with discount-example file names, and its permission profile and prompt (reformatted, shortened and translated).
 
@@ -71,6 +74,4 @@ All code examples use an invented web-shop discount example and are labelled on 
 
 ## Open points to check before the talk
 
-- The closing slide still links the demo repository, which is the meeting-room booking system. Keep it only if you want to point people at the real workflow scripts.
-- "Älä pyydä agenttia muistamaan. Tee unohtamisesta virhe." comes from Loihde's internal AI-natiivi kehitys deck (marked Internal). Check with its owner before quoting it publicly.
 - Slidev version: `package.json` pins `@slidev/cli ^51`. If you prefer the latest major, update it and re-check the code-block styling and the Goto dialog.
