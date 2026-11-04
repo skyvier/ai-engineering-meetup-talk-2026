@@ -73,6 +73,7 @@ All code examples use an invented web-shop discount example and are labelled on 
 ## Status
 
 - `slidev build` and `slidev export` run cleanly. Every slide was checked in Slidev's own renderer for overflow.
+- `ohjelmistokehitys-agenttien-aikakaudella.pdf` in the repository root is a rendered copy of the slides (each slide in its final click state). Regenerate it with `npm run export` and copy it from `dist/` after changing the deck.
 - `package.json` pins `fuse.js` to 7.1.0 with an npm override; see `CLAUDE.md` for why.
 - The demo itself is not run during the talk.
 
