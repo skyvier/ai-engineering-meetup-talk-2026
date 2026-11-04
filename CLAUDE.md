@@ -12,6 +12,8 @@ A Slidev slide deck in Finnish for a ~30-minute AI × Software Engineering meetu
 nix develop            # optional: Node.js 22 shell, auto-runs npm install / npm ci
 npm install
 npm run dev            # http://localhost:3030, presenter view at /presenter
+npm run present        # open presenter view (starts the dev server if needed)
+npm run slides         # open the audience view (starts the dev server if needed)
 npm run build          # static SPA -> dist/
 npx playwright install chromium   # once, before exporting
 npm run export         # slides PDF -> dist/ohjelmistokehitys-agenttien-aikakaudella.pdf

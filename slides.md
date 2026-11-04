@@ -35,7 +35,7 @@ layout: cover
 <img class="logo" src="/loihde-white.svg" alt="Loihde" />
 
 <!--
-[0:00–0:45]
+[0:00–0:30]
 
 Tervetuloa. Kaikki täällä ovat käyttäneet koodausagentteja, joten en esittele niitä.
 
@@ -43,7 +43,7 @@ Kysymys tänään: miten agentille voi antaa enemmän vapautta niin, että kontr
 
 Tänään kolme askelta: määrittele järjestelmä, eristä agentti tarkistuksesta ja päästä se irti. Järjestelmä määritellään kolmella deterministisellä tarkistuksella: tyypeillä, ominaisuustesteillä (property testing) ja hyväksymistesteillä (Gherkin). Esimerkkinä on verkkokaupan alennus.
 
-Tärkeä rajaus heti alkuun: emme aja agenttia livenä. Esimerkit ovat yksinkertaistettuja, ja agentin työnkulku näytetään demorepon asetuksista ja kehotteesta.
+Tärkeä rajaus heti alkuun: emme aja agenttia livenä. Esimerkit ovat yksinkertaistettuja, ja agentin työnkulku näytetään asetuksina ja kehotteena.
 -->
 
 ---
@@ -89,7 +89,7 @@ Tärkeä rajaus heti alkuun: emme aja agenttia livenä. Esimerkit ovat yksinkert
 </svg>
 
 <!--
-[0:45–1:30]
+[0:30–1:15]
 
 Kaikki tuntevat tämän, joten lyhyesti. Agentti saa tehtävän, muokkaa koodia, ajaa työkalut, lukee palautteen ja jatkaa, kunnes se päättää itse, että työ on valmis.
 
@@ -132,7 +132,7 @@ Siirtymä: entä se "valmis"? Mistä tiedämme, että agentti on oikeasti valmis
 </div>
 
 <!--
-[1:30–3:15]
+[1:15–3:25]
 
 Terminaali on keksitty havainnollistus, ei oikean ajon tuloste. Sanon tämän ääneen.
 
@@ -140,6 +140,8 @@ Pointti: agentin raportti on hyödyllistä tietoa mutta ei hyväksymiskriteeri. 
 - Sama väärinkäsitys kahdesti: jos agentti ymmärsi tehtävän väärin, se kirjoittaa saman väärinkäsityksen sekä koodiin että testeihin. Testit vahvistavat väärinkäsityksen sen sijaan, että paljastaisivat sen.
 - Testejä voi muuttaa: kun tarkistus ja tarkistettava ovat saman kirjoittajan käsissä, helpoin tie vihreään voi olla tarkistuksen heikentäminen.
 - Erehtyy omasta valmiudestaan: agentti voi jättää testin ajamatta, selittää epäonnistuneen testin epävakaaksi tai asiaan kuulumattomaksi, tai lopettaa "riittävän hyvään". Raportti näyttää silti samalta: "Valmis! ✅". Syy on se, että "valmis" on mallin arvio eikä toistettava tarkistus.
+
+Kysy yleisöltä: "Kuinka monella on käynyt niin, että Claude tai Codex on sanonut työn olevan valmis, vaikka sitä ei ollut edes yritetty?" Odota käsiä hetki.
 
 Siirtymä: mitä "valmis" oikeastaan tarkoittaa?
 -->
@@ -185,7 +187,7 @@ Tavoite: <strong>tarpeeksi tiukka</strong>, että järjestelmä toimii odotetust
 </div>
 
 <!--
-[3:15–4:45]
+[3:25–4:25]
 
 Edellisellä dialla "valmis" oli agentin oma arvio. Se on janan vasen pää: liian löysä. Agentti voi olla valmis mistä tahansa.
 
@@ -229,19 +231,141 @@ Siirtymä: millä tarkistuksilla tällainen "valmis" kirjoitetaan?
 </style>
 
 <!--
-[4:45–6:00]
+[4:25–5:25]
 
-Deterministisiä tarkistuksia on paljon. Tänään valitaan kolme, ja valinnan peruste on, että ne kirjoittavat järjestelmän lait:
+Tahti: kevyt. Nimeä kolme, älä selitä niitä vielä.
 
-- Tyypit: sopimus koodin sisällä. Ne pakottavat sopimuksen ja ohjaavat toteutusta: väärää arvoa ei voi edes kirjoittaa. Mitä voi olla olemassa.
-- Ominaisuustestit: mihin muut luottavat. Käytös, josta järjestelmän muut osat ja ulkoiset järjestelmät riippuvat: säännöt, jotka pätevät kaikilla syötteillä. Mikä pätee aina.
-- Hyväksymistestit: täyttyykö tarve. Sovitut esimerkit sen ihmisen näkökulmasta, joka työn tarvitsi. Mitä pitää tapahtua.
+Deterministisiä tarkistuksia on paljon, ja kaikilla on paikkansa. Tänään keskityn kolmeen: tyyppeihin, ominaisuustesteihin ja hyväksymistesteihin.
 
-Järjestys kulkee koodista ulospäin: koodi → muut järjestelmät → käyttäjä.
+Miksi juuri nämä? Ne kuvaavat järjestelmää eivätkä koodia: mitä voi olla olemassa, mikä pätee aina ja mitä pitää tapahtua. Siksi ne pysyvät totena, vaikka toteutus vaihtuu, ja ihminen voi päättää ne ennen delegointia.
 
-Ne kuvaavat järjestelmää eivätkä koodia, joten ihminen päättää ne ennen delegointia. Agentti saa muuttaa sitä, miten, mutta ei lakeja.
+Itse olen suuri tyyppijärjestelmien ystävä, ja agenttiaikana ne ovat entistä tärkeämpiä. Tyypit lyövät rajapinnan lukkoon, ja juuri siksi kaksi muuta voi kirjoittaa ennen toteutusta.
 
-Himmennetyt testaavat useimmiten juuri tätä toteutusta (yksikkötestit mockeilla, golden-tiedostot sisäisestä tulosteesta) tai ajetaan agentin oman silmukan ulkopuolella (E2E, CI:n integraatiotestit). E2E-testit tarkistavat nekin järjestelmän käytöstä, joten rehellinen toissijainen syy on nopeus. Arkkitehtuuritestit ja tietoturvaskannaus ovat hyviä ja deterministisiä, mutta ne vartioivat koodin rakennetta, eivät järjestelmän käytöstä.
+Käydään kukin läpi omana osionaan.
+
+(Jos joku kysyy himmennetyistä: ne testaavat useimmiten juuri tätä toteutusta tai ajetaan agentin silmukan ulkopuolella. Ne ovat hyviä, mutta eivät kuvaa järjestelmän käytöstä samalla tavalla.)
+
+Siirtymä: miten nämä kolme yhdessä rajaavat, mikä on valmis?
+-->
+
+---
+
+# Rajataan hyväksyttävien ohjelmien joukkoa
+
+<div class="cols-wide-left" style="align-items: center">
+<div>
+<svg class="diagram" viewBox="0 0 540 360" role="img" aria-label="Kaikkien ohjelmien sisällä kolme toisiaan leikkaavaa joukkoa: tyyppitarkistuksen läpäisevät, ominaisuudet täyttävät ja hyväksymiskriteerit täyttävät ohjelmat. Hyväksytään vain kolmen joukon leikkaus, joka on agentin vapaus.">
+  <rect x="6" y="6" width="528" height="348" rx="14" fill="#F6F5F7" stroke="#C8C8CC"/>
+  <text x="22" y="30" style="font-size:13px" fill="#545459" font-weight="700">Kaikki ohjelmat</text>
+  <!-- the three sets -->
+  <circle cx="200" cy="145" r="100" fill="#B496CD" fill-opacity="0.28" stroke="#866A9D" stroke-width="2"/>
+  <circle cx="340" cy="145" r="100" fill="#41B4AF" fill-opacity="0.24" stroke="#00847F" stroke-width="2"/>
+  <circle cx="270" cy="245" r="100" fill="#F67B50" fill-opacity="0.18" stroke="#C4502A" stroke-width="2"/>
+  <g font-weight="700" style="font-size:13px">
+    <text x="118" y="104" fill="#50375F">Tyypit</text>
+    <text x="352" y="104" fill="#00847F">Ominaisuudet</text>
+    <text x="270" y="316" text-anchor="middle" fill="#C4502A">Hyväksymiskriteerit</text>
+  </g>
+  <g fill="#545459" style="font-size:11.5px">
+    <text x="118" y="120">kääntyy</text>
+    <text x="352" y="120">lait pätevät</text>
+    <text x="270" y="332" text-anchor="middle">skenaariot läpi</text>
+  </g>
+  <!-- the intersection -->
+  <circle cx="270" cy="182" r="8" fill="#192D2D"/>
+  <line x1="277" y1="188" x2="392" y2="280" stroke="#192D2D" stroke-width="1.2"/>
+  <text x="396" y="292" fill="#192D2D" font-weight="700" style="font-size:12.5px">hyväksytään</text>
+  <text x="396" y="308" fill="#545459" style="font-size:11.5px">agentin vapaus</text>
+</svg>
+</div>
+<div>
+
+- Jokainen tarkistus **rajaa** hyväksyttävien ohjelmien joukkoa.
+- Hyväksytään vain **leikkaus**: kääntyy, lait pätevät ja skenaariot menevät läpi.
+- Leikkauksessa on yhä **monta** ratkaisua. Se on agentin vapaus.
+- Ihminen vastaa siitä, **osuvatko rajat** tarkoitukseen.
+
+<p class="tiny" style="margin-top: 14px">Käsitteellinen malli hyväksynnästä. Ei väite siitä, että mallin generointia rajattaisiin muodollisesti.</p>
+
+</div>
+</div>
+
+<!--
+[5:25–6:10]
+
+Pointti: ilman rajauksia agentti voi generoida mitä tahansa ohjelmaa. Todennäköisesti se osuu lähelle, mutta deterministiset tarkistukset varmistavat, että hyväksyttävien ohjelmien joukko on rajattu siihen, mitä haluamme.
+
+Jokainen tarkistus rajaa joukkoa. Hyväksytään vain leikkaus, ja sen sisällä on yhä monta toteutusta: se on agentin vapaus.
+
+Ihminen vastaa siitä, osuvatko rajat siihen, mitä oikeasti tarkoitimme.
+
+Palaamme tähän kuvaan, kun kaikki kolme on nähty.
+
+(Jos joku kysyy: tämä on hyväksymisen malli, ei väite siitä, että kielimallin generointia rajattaisiin muodollisesti. Agentti voi kirjoittaa mitä tahansa; me päätämme, mitä otamme vastaan.)
+
+Siirtymä: ensin esimerkki, johon loppuesitys nojaa.
+-->
+
+---
+
+# Esimerkki: alennus verkkokaupan kassalla
+
+<div class="cols" style="grid-template-columns: 1fr 1.15fr; gap: 34px; margin-top: 14px; align-items: start">
+<div>
+
+<span class="label-illustrative">Keksitty esimerkki</span>
+
+<div class="checkout">
+<div class="co-row"><span>Ostoskori</span><span>100,00&nbsp;€</span></div>
+<div class="co-code"><span class="co-input">AUTUMN20</span><span class="co-ok">✓ −20&nbsp;%</span></div>
+<div class="co-code"><span class="co-input">SUMMER10</span><span class="co-bad">✗ vanhentunut</span></div>
+<div class="co-row co-total"><span>Maksettava</span><span>80,00&nbsp;€</span></div>
+</div>
+
+</div>
+<div>
+
+<h2>Mitä esimerkissä on</h2>
+
+<ul>
+<li><strong>Hinta ja alennus.</strong> <code>Money</code> sentteinä, <code>Percent</code> välillä 0&#8288;–&#8288;100.</li>
+<li><strong>Yksi funktio.</strong> <code>applyDiscount(price, discount)</code></li>
+<li><strong>Kampanjakoodit.</strong> Voimassa oleva koodi alentaa hintaa, vanhentunut hylätään.</li>
+</ul>
+
+<p class="tiny">Jätetty pois: verot, valuutat, tuotekohtaiset alennukset, palautukset.</p>
+
+</div>
+</div>
+
+<div class="callout teal" style="margin-top: 22px">
+Esimerkki on <strong>tarkoituksella äärimmäisen yksinkertainen</strong>. Se näyttää mekanismin. Oikeassa työssä tarkistusten määrä riippuu muutoksen riskistä.
+</div>
+
+<style>
+.checkout { margin-top: 12px; border: 1px solid var(--l-gray-300); border-radius: 10px; padding: 14px 18px; background: #fff; box-shadow: 0 4px 18px rgba(80, 55, 95, 0.07); font-size: 17px; }
+.co-row, .co-code { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; }
+.co-code { border-top: 1px dashed var(--l-gray-300); }
+.co-input { font-family: ui-monospace, Menlo, monospace; font-size: 15px; border: 1px solid var(--l-gray-300); border-radius: 6px; padding: 3px 10px; background: var(--l-gray-50); }
+.co-ok { color: var(--l-teal-deep); font-weight: 700; }
+.co-bad { color: #C4502A; font-weight: 700; }
+.co-total { border-top: 2px solid var(--l-ink); margin-top: 4px; font-weight: 700; font-size: 19px; }
+</style>
+
+<!--
+[6:10–7:10]
+
+Tahti: rauhallisesti. Kaikki myöhempi nojaa tähän.
+
+Ennen tarkistuksia: esimerkki, johon loppuesitys nojaa.
+
+Verkkokaupan kassa. Asiakas syöttää kampanjakoodin. AUTUMN20 antaa 20 prosentin alennuksen: sadan euron korista maksetaan 80 euroa. Vanhentunut SUMMER10 hylätään, eikä summa muutu.
+
+Koodissa tämä on kaksi tyyppiä, Money sentteinä ja Percent nollasta sataan, ja yksi funktio, applyDiscount. Samat nimet palaavat jokaisella seuraavalla dialla.
+
+Sano ääneen: esimerkki on tarkoituksella äärimmäisen yksinkertainen. Jokaisen tarkistuksen idea mahtuu yhdelle dialle, eikä kenenkään tarvitse opetella uutta domainia. Oikeassa järjestelmässä tarkistuksia rakennetaan sen mukaan, kuinka riskialtis muutos on. Palaan siihen lopussa.
+
+Siirtymä: ensimmäinen tarkistus, tyypit.
 -->
 
 ---
@@ -249,8 +373,6 @@ Himmennetyt testaavat useimmiten juuri tätä toteutusta (yksikkötestit mockeil
 # Tyypit
 
 <p class="h1-sub"><span class="step">1 / 3</span> · Tyyppi kantaa todisteen</p>
-
-<p class="muted" style="margin-top: -6px">Esimerkkinä verkkokaupan alennus.</p>
 
 <svg class="diagram" viewBox="0 0 876 262" style="margin-top: 14px" role="img" aria-label="Luottamusraja: ulkomaailman raa'at luvut tarkistetaan kerran percent-konstruktorissa. Hylätyt palautuvat nullina. Hyväksytyt kulkevat järjestelmän sisälle Percent-tyyppisinä, eikä kukaan tarkista niitä uudelleen.">
   <!-- outside -->
@@ -296,19 +418,15 @@ Tarkistus tehdään <strong>kerran rajalla</strong>. Tyyppi kantaa todisteen ete
 <p class="tiny" style="margin-top: 6px">Ajatus tunnetaan nimellä ”Parse, don't validate” (Alexis King, 2019).</p>
 
 <!--
-[6:00–7:15]
+[7:10–7:55]
 
-Ennen esimerkkiä ajatus: tyyppi voi kantaa todisteen arvosta.
+Tahti: kevyt.
 
-Esimerkkinä verkkokaupan alennus. Ulkomaailmasta tulee raakoja lukuja: kampanjan hallintanäkymästä, API:sta tai agentin kirjoittamasta koodista. Niistä ei tiedetä mitään. Rajalla on yksi konstruktori, percent(), joka tarkistaa kerran, että luku on 0 ja 100 välissä. Jos ei ole, tulos on null ja arvo hylätään rajalla.
+Ajatus ennen koodia: tyyppi voi kantaa todisteen.
 
-Jos tarkistus menee läpi, arvo saa tyypin Percent. Rajan sisäpuolella kaikki funktiot ottavat Percentin, eikä kenenkään tarvitse tarkistaa uudelleen. Tyyppi on todiste siitä, että tarkistus on tehty.
+Raaka luku tulee ulkomaailmasta. percent() tarkistaa sen kerran rajalla. Läpi päässyt arvo on Percent, eikä kenenkään tarvitse tarkistaa sitä uudelleen. Agentti ei ohita rajaa vahingossa.
 
-Tämä on myös luottamusraja agentille: agentti voi kirjoittaa mitä tahansa sisäpuolelle, mutta se ei voi ohittaa rajaa ilman, että kääntäjä huomaa.
-
-Nimi niille, jotka tuntevat sen: "Parse, don't validate", Alexis Kingin kirjoitus vuodelta 2019.
-
-Siirtymä: miltä tämä näyttää koodissa?
+(Jos joku kysyy: ajatus tunnetaan nimellä "Parse, don't validate", Alexis King 2019.)
 -->
 
 ---
@@ -317,12 +435,12 @@ Siirtymä: miltä tämä näyttää koodissa?
 
 <p class="h1-sub"><span class="step">1 / 3</span> · Sopimus koodin sisällä</p>
 
-<div class="cols code-sm" style="grid-template-columns: 1.15fr 1fr; gap: 22px; margin-top: 6px">
+<div class="cols code-md" style="grid-template-columns: 1.3fr 1fr; gap: 22px; margin-top: 6px">
 <div>
 
-```ts
-type Money = number & { readonly __brand: 'Money' };
-type Percent = number & { readonly __brand: 'Percent' };
+```ts {1-2|4-8|10-13|14-15|all}{at:1}
+type Money   = number & { __brand: 'Money' };
+type Percent = number & { __brand: 'Percent' };
 
 function percent(value: number): Percent | null {
   return value >= 0 && value <= 100
@@ -334,10 +452,8 @@ declare function applyDiscount(
   price: Money,
   discount: Percent,
 ): Money;
-
 applyDiscount(price, 20);
-// ✗ Argument of type 'number' is not
-//   assignable to parameter of type 'Percent'.
+// ✗ 'number' is not assignable to 'Percent'
 ```
 
 <p class="src">Yksinkertaistettu esimerkki</p>
@@ -347,34 +463,38 @@ applyDiscount(price, 20);
 
 <h2>Miksi agentille?</h2>
 
-- **Väärää ei voi kirjoittaa.** Validoimaton prosentti ei käänny, joten agentin ei tarvitse muistaa validointia.
-- **Ohjaa toteutusta.** Kääntäjä kertoo heti ja tarkasti, mikä puuttuu.
-- **Testit voi kirjoittaa etukäteen.** Kun rajapinta on lyöty lukkoon, ominaisuus- ja hyväksymistestit voi kirjoittaa ennen toteutusta. Ne nojaavat sopimukseen, eivät koodiin.
+<ul>
+<li><strong>Domain-tyypit ohjaavat toteutusta.</strong> <code>Money</code> ja <code>Percent</code> kertovat, mitä luku tarkoittaa.</li>
+<li v-click="1"><strong>Yksi tie sisään.</strong> <code>Percent</code>-arvon saa vain konstruktorista, joka tarkistaa rajat.</li>
+<li v-click="2"><strong>Testit voi kirjoittaa etukäteen.</strong> Ne nojaavat sopimukseen, eivät koodiin.</li>
+<li v-click="3"><strong>Väärää ei kirjoiteta vahingossa.</strong> Kääntäjä kertoo heti, missä validointi puuttuu.</li>
+</ul>
 
-<p class="tiny">Tyyppi pakottaa validoinnin tapahtumaan. Se ei todista, että validointi on oikein.</p>
+<p class="tiny" v-click="4">Ohitus (<code>as</code>, <code>any</code>) vaatii tahallisen teon, ja sen voi kieltää lint-säännöllä. Tyyppi ei todista, että validointi on oikein.</p>
 
 </div>
 </div>
 
-<div class="callout teal" style="margin-top: 14px">
+<div class="callout teal" style="margin-top: 14px" v-click="4">
 Älä pyydä agenttia muistamaan. <strong>Tee unohtamisesta virhe.</strong>
 </div>
 
 <!--
-[7:15–8:30]
+[7:55–9:10]
 
-Ensimmäinen kolmesta: tyypit. Esimerkkinä verkkokaupan alennus, ei demon aihe. Demo tulee myöhemmin omana osionaan.
+Tahti: kevyt. Yksi lause per korostus.
 
-Money ja Percent ovat brändättyjä tyyppejä: ajonaikaisesti pelkkiä lukuja, mutta kääntäjä erottaa ne. Percent-arvon saa vain percent()-funktiosta, joka tarkistaa rajat. applyDiscount ottaa vain Percentin, joten pelkkä 20 ei käänny.
+Domain-tyypit: Money ja Percent ovat lukuja, mutta kääntäjä erottaa ne. Ne kertovat, mitä luku tarkoittaa.
 
-Miksi tämä toimii agentille:
-- Agentin ei tarvitse muistaa validoida. Unohtaminen on käännösvirhe.
-- Palaute on nopea ja tarkka: kääntäjä kertoo rivin ja syyn.
-- Tärkein havainto käytännöstä: kun tyypit ovat kiinni, voimme kirjoittaa ominaisuus- ja hyväksymistestit etukäteen, ennen kuin toteutusta on olemassa. Testit nojaavat sopimukseen, eivätkä riko, kun toteutus muuttuu.
+[click] Konstruktori: Percentin saa vain tästä, ja se tarkistaa rajat.
 
-Rajaus: tyyppi pakottaa validoinnin tapahtumaan, se ei todista, että validointi on oikein. Oikeellisuus tulee testeistä.
+[click] Sopimus: kun allekirjoitus on kiinni, testit voi kirjoittaa ennen toteutusta.
 
-"Älä pyydä agenttia muistamaan. Tee unohtamisesta virhe."
+[click] Virhe: pelkkä 20 ei käänny. Agentin ei tarvitse muistaa validoida.
+
+[click] Älä pyydä agenttia muistamaan. Tee unohtamisesta virhe.
+
+(Jos joku kysyy: as ja any ohittavat tämän, mutta vain tahallaan, ja ne voi kieltää lint-säännöllä. Tyyppi ei myöskään todista, että validointi on oikein; se tulee testeistä.)
 -->
 
 ---
@@ -385,17 +505,18 @@ Rajaus: tyyppi pakottaa validoinnin tapahtumaan, se ei todista, että validointi
 
 <table class="laws-table">
 <thead>
-<tr><th>Esimerkki: tavallinen testi</th><th>Laki: ominaisuustesti</th></tr>
+<tr><th>Yksi tapaus: tavallinen testi</th><th>Kaikki tapaukset: ominaisuustesti</th></tr>
 </thead>
 <tbody>
-<tr><td><code>2 + 3 = 5</code></td><td><code>a + b = b + a</code> kaikilla luvuilla <code>a</code>, <code>b</code></td></tr>
-<tr><td><code>sort([3, 1, 2]) = [1, 2, 3]</code></td><td><code>sort(sort(xs)) = sort(xs)</code> kaikilla listoilla <code>xs</code></td></tr>
-<tr class="domain"><td>20 %:n alennus hinnasta 100 € → 80 €</td><td>Alennettu hinta on <strong>aina</strong> nollan ja alkuperäisen hinnan välissä</td></tr>
-<tr class="domain"><td>0 %:n alennus hinnasta 100 € → 100 €</td><td>Nollan prosentin alennus <strong>ei koskaan</strong> muuta hintaa</td></tr>
+<tr><td><code>2 + 3 = 3 + 2</code></td><td><code>a + b = b + a</code> kaikilla luvuilla <code>a</code>, <code>b</code></td></tr>
+<tr v-click="1"><td><code>sort(sort([3, 1, 2])) = sort([3, 1, 2])</code></td><td><code>sort(sort(xs)) = sort(xs)</code> kaikilla listoilla <code>xs</code></td></tr>
+<tr class="domain" v-click="2"><td>0 %:n alennus hinnasta 100 € → 100 €</td><td>Nollan prosentin alennus <strong>ei koskaan</strong> muuta hintaa</td></tr>
 </tbody>
 </table>
 
-<div class="callout teal" style="margin-top: 20px">
+<p class="edge-note" v-click="3"><strong>Reunatapaukset.</strong> Ominaisuustestit löytävät usein reunatapauksia, jotka eivät käy agentin tai ohjelmistokehittäjän mielessä.</p>
+
+<div class="callout teal" style="margin-top: 14px" v-click="4">
 Esimerkki näyttää <strong>yhden tapauksen</strong>. Laki sanoo, mikä pätee <strong>kaikille</strong>.
 </div>
 
@@ -405,133 +526,104 @@ Esimerkki näyttää <strong>yhden tapauksen</strong>. Laki sanoo, mikä pätee 
 .laws-table th:nth-child(2) { color: var(--l-teal-deep); border-bottom-color: var(--l-teal); }
 .laws-table td { padding: 10px 8px; width: 50%; }
 .laws-table td:first-child { color: var(--l-gray-700); }
-.laws-table tr.domain:first-of-type td, .laws-table tr.domain + tr.domain td { }
+.laws-table tr.slidev-vclick-hidden td { border-color: transparent !important; }
+.slidev-layout .edge-note { margin: 14px 0 0; padding: 8px 14px; border-left: 4px solid var(--l-teal); background: rgba(65, 180, 175, 0.08); border-radius: 0 6px 6px 0; font-size: 15px; }
 .laws-table tbody tr:nth-child(3) td { border-top: 2px solid var(--l-gray-300); }
 </style>
 
 <!--
-[8:30–10:00]
+[9:10–10:30]
 
-Moni ei ole kuullut ominaisuustestauksesta, joten lähdetään matematiikasta.
+Tahti: kevyt. Yksi lause per rivi; lakien nimet ovat bonusta.
 
-2 + 3 = 5 on esimerkki. a + b = b + a on laki: se pätee kaikille luvuille. Samoin sort([3, 1, 2]) on esimerkki, mutta "lajittelu kahdesti on sama kuin kerran" on laki.
+Moni ei ole kuullut ominaisuustestauksesta, joten lähdetään matematiikasta. Vasemmalla yksi tapaus, oikealla sama kaikille tapauksille. Vaihdannaisuus: järjestyksellä ei ole väliä.
 
-Tavallinen testi tarkistaa esimerkkejä. Ominaisuustesti tarkistaa lakeja.
+[click] Idempotenssi: kahdesti on sama kuin kerran.
 
-Järjestelmälläkin on lakeja. Verkkokaupassa alennettu hinta on aina nollan ja alkuperäisen välissä. Se on invariantti. Nollan prosentin alennus ei koskaan muuta hintaa. Se on neutraalialkio, sama ajatus kuin a + 0 = a.
+[click] Omaan järjestelmään: nolla prosenttia ei koskaan muuta hintaa. Neutraalialkio.
 
-Nämä ovat juuri niitä asioita, joihin muut järjestelmän osat luottavat.
+[click] Tämä on käytännössä tärkein: ominaisuustestit löytävät reunatapauksia, joita agentti tai kehittäjä ei tullut ajatelleeksi. Seuraavalla dialla nähdään yksi.
 
-Siirtymä: miten työkalu tarkistaa lain, jos syötteitä on äärettömän monta?
+[click] Esimerkki näyttää yhden tapauksen. Laki sanoo, mikä pätee kaikille.
 -->
 
 ---
 
 # Ominaisuustestit
 
-<p class="h1-sub"><span class="step">2 / 3</span> · Miten työkalu etsii vastaesimerkin</p>
+<p class="h1-sub"><span class="step">2 / 3</span> · Laki koodina</p>
 
-<div class="cols-4" style="margin-top: 14px">
-<div class="card soft small"><h3>1 · Generoi</h3>Satoja satunnaisia syötteitä, esim. hinta- ja alennuspareja</div>
-<div class="card soft small"><h3>2 · Tarkista</h3>Päteekö laki jokaiselle?</div>
-<div class="card soft small"><h3>3 · Kutista</h3>Epäonnistunut syöte pienennetään pienimmäksi, joka yhä kaataa testin</div>
-<div class="card accent small"><h3>4 · Raportoi</h3>Pienin vastaesimerkki, jonka ihminen ymmärtää yhdellä silmäyksellä</div>
-</div>
-
-<div class="cols" style="margin-top: 18px; align-items: start">
-<div>
-
-<span class="label-illustrative">Havainnollistus – ei oikean ajon tuloste</span>
-
-<div class="terminal" style="margin-top: 10px; font-size: 13px">
-<div><span class="prompt">✗</span> discounted price is within [0, price]</div>
-<div>&nbsp;&nbsp;Property failed after 37 tests</div>
-<div>&nbsp;&nbsp;Shrunk 6 time(s)</div>
-<div>&nbsp;&nbsp;Counterexample:</div>
-<div>&nbsp;&nbsp;&nbsp;&nbsp;price = 0, discount = 1</div>
-<div>&nbsp;&nbsp;Expected 0 ≤ result ≤ price, got -1</div>
-</div>
-
-</div>
-<div>
-
-<h2>Mitä tästä näkee?</h2>
-
-- Toteutus vähensi alennuksen hinnasta **sentteinä** eikä prosentteina.
-- Pienillä hinnoilla tulos meni **negatiiviseksi**.
-- Satunnainen syöte, esim. <code>price = 37, discount = 81</code>, kutistui pienimpään mahdolliseen.
-
-</div>
-</div>
-
-<!--
-[10:00–11:30]
-
-Miten laki tarkistetaan, kun syötteitä on äärettömän monta? Ei tarkisteta kaikkia. Työkalu generoi satoja satunnaisia syötteitä ja etsii yhtä, joka rikkoo lain.
-
-Kun se löytyy, työkalu kutistaa sen: kokeilee pienempiä lukuja ja lyhyempiä listoja niin kauan kuin testi yhä kaatuu. Tulos on pienin vastaesimerkki.
-
-Terminaali on keksitty havainnollistus, ei oikean ajon tuloste. Sanon tämän ääneen. Bugi: toteutus vähensi alennuksen hinnasta sentteinä eikä prosentteina. Esimerkkitesti 100 € ja 20 % paljastaisi tämän, jos joku kirjoittaa sen. Ominaisuustesti löytää virheen ilman, että kenenkään tarvitsee keksiä oikeaa esimerkkiä: pienillä hinnoilla tulos menee negatiiviseksi, ja kutistus kertoo pienimmän tapauksen, hinta 0 ja alennus 1 %.
-
-Agentille tämä on erityisen hyvää palautetta: pieni, konkreettinen vastaesimerkki kertoo tarkasti, mikä on vialla.
-
-Siirtymä: miltä tällainen testi näyttää koodissa?
--->
-
----
-
-# Ominaisuustestit
-
-<p class="h1-sub"><span class="step">2 / 3</span> · Mihin muut luottavat</p>
-
-<div class="cols code-sm" style="grid-template-columns: 1.15fr 1fr; gap: 22px; margin-top: 6px">
+<div class="cols code-md" style="grid-template-columns: 1.3fr 1fr; gap: 22px; margin-top: 6px">
 <div>
 
 ```ts
-test('discounted price is within [0, price]', () => {
-  fc.assert(
-    fc.property(anyMoney, anyPercent,
-      (price, discount) => {
-        const discounted = applyDiscount(price, discount);
-        return discounted >= 0 && discounted <= price;
-      }),
-  );
+test('0 % discount never changes the price', () => {
+  fc.assert(fc.property(anyMoney, (price) =>
+    applyDiscount(price, percent(0)!) === price,
+  ));
 });
 ```
 
-<p class="src">Yksinkertaistettu esimerkki · fast-check · generaattorit rakennetaan tyyppien konstruktoreista</p>
+<div v-click="1">
+
+<p class="impl-label">Virheellinen toteutus</p>
+
+```ts
+const DEFAULT_PERCENT = percent(10)!;
+
+function applyDiscount(price: Money, d: Percent) {
+  const p = d || DEFAULT_PERCENT; // ✗ 0 on epätosi
+  return money(Math.floor(price * (100 - p) / 100));
+}
+```
 
 </div>
-<div>
 
-<h2>Miksi agentille?</h2>
+<p class="src">Yksinkertaistettu esimerkki · fast-check</p>
 
-- **Sääntö, ei esimerkki.** Testi generoi satoja syötteitä ja etsii vastaesimerkin. Yhtä tapausta kovakoodaamalla sitä ei läpäise.
-- **Muut riippuvat tästä.** Kassa, laskutus ja raportointi olettavat, ettei alennettu hinta ole koskaan negatiivinen.
-- **Kirjoitettu ennen toteutusta.** Testi käyttää vain tyyppejä `Money` ja `Percent` sekä julkista `applyDiscount()`-rajapintaa.
+</div>
+<div v-click="2">
 
-<p class="tiny">Otos, ei todistus: tuhat läpäistyä tapausta ei takaa, ettei vastaesimerkkiä ole.</p>
+<span class="label-illustrative">Havainnollistus – ei oikean ajon tuloste</span>
+
+<div class="terminal" style="margin-top: 10px; font-size: 12.5px">
+<div><span class="prompt">✗</span> 0 % discount never changes the price</div>
+<div>&nbsp;&nbsp;Property failed after 12 tests</div>
+<div>&nbsp;&nbsp;Shrunk 4 time(s)</div>
+<div>&nbsp;&nbsp;Counterexample:</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;price = 1</div>
+<div>&nbsp;&nbsp;Expected 1, got 0</div>
+</div>
+
+<p class="tiny" style="margin-top: 10px">Otos, ei todistus: tuhat läpäistyä tapausta ei takaa, ettei vastaesimerkkiä ole.</p>
 
 </div>
 </div>
 
-<div class="callout teal" style="margin-top: 14px">
-Ominaisuustesti ei kerro, <strong>miten</strong>. Se kertoo, mikä pätee <strong>aina</strong>.
+<div class="callout teal" style="margin-top: 14px" v-click="2">
+Vastaesimerkki on agentille <strong>tarkkaa palautetta</strong>: mikä laki, millä syötteellä, mikä tulos.
 </div>
+
+<style>
+.slidev-layout .impl-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #C4502A; margin: 12px 0 2px; }
+</style>
 
 <!--
-[11:30–12:30]
+[10:30–11:40]
 
-Toinen: ominaisuustestit. Sama alennusesimerkki.
+Tahti: koodi kevyesti, vastaesimerkkiin pysähdy.
 
-Testi ei listaa esimerkkejä vaan säännön: millä tahansa hinnalla ja millä tahansa sallitulla alennuksella alennettu hinta on nollan ja alkuperäisen välissä. fast-check generoi syötteet ja kutistaa löytämänsä vastaesimerkin pienimpään muotoon.
+Sama laki kuin edellisellä dialla, nyt koodina: nollan prosentin alennus ei koskaan muuta hintaa. Nimi on laki, generaattori tuottaa satoja hintoja, ja itse laki on yksi rivi.
 
-Miksi tämä toimii agentille:
-- Agentti ei voi läpäistä testiä erikoistapauksilla. Sääntö pätee kaikkiin syötteisiin tai ei mihinkään.
-- Valitaan säännöt, joihin järjestelmän muut osat luottavat. Juuri ne ovat kalleimpia rikkoa.
-- Testi on kirjoitettu ennen toteutusta, koska se tarvitsee vain tyypit. Generaattorit rakennetaan samoista konstruktoreista, joita tuotantokoodi käyttää.
+[click] Virheellinen toteutus. Bugi on toisella rivillä: d || DEFAULT_PERCENT. JavaScriptissä nolla on epätosi, joten nollan prosentin alennus korvautuu kymmenen prosentin oletusalennuksella. Klassinen reunatapaus, joka näyttää koodikatselmoinnissa harmittomalta.
 
-Rajaus: otos, ei todistus.
+[click] Pysähdy tähän. Sano ääneen: tuloste on keksitty havainnollistus.
+
+Testi löysi lakia rikkovan hinnan ja yksinkertaisti sen: yhden sentin hinnasta tuli nolla, koska 10 % yhdestä sentistä pyöristyy alas.
+
+Agentille tämä on täsmällistä palautetta: mikä laki, millä syötteellä, mikä tulos. Ei "jokin meni pieleen", vaan vastaesimerkki, jonka voi korjata.
+
+Yksi laki ei kuitenkaan riitä: toteutus, joka ei alenna lainkaan, täyttää tämän. Palataan siihen kohta.
 -->
 
 ---
@@ -568,7 +660,7 @@ Kriteerit ovat jo olemassa. Hyväksymistesti tekee niistä <strong>ajettavia</st
 </style>
 
 <!--
-[12:30–13:15]
+[11:40–12:20]
 
 Hyväksymistestit kuulostavat raskailta, mutta useimmilla on ne jo, vain eri muodossa: tiketin hyväksymiskriteereinä.
 
@@ -587,35 +679,35 @@ Hyväksymistesti on sama asia ajettavana. Seuraavalla dialla nämä kaksi kritee
 
 <p class="h1-sub"><span class="step">3 / 3</span> · Täyttyykö tarve</p>
 
-<div class="cols code-sm" style="grid-template-columns: 1.15fr 1fr; gap: 22px; margin-top: 6px">
+<div class="cols code-md" style="grid-template-columns: 1.25fr 1fr; gap: 22px; margin-top: 6px">
 <div>
 
 ```gherkin
-Feature: Campaign codes
+Scenario: A valid code lowers the price
+  Given the cart total is 100.00
+  When the customer enters the code "AUTUMN20"
+  Then the amount to pay is 80.00
 
-  Scenario: A valid code lowers the price
-    Given the cart total is 100.00
-    When the customer enters the code "AUTUMN20"
-    Then the amount to pay is 80.00
-
-  Scenario: An expired code is rejected
-    Given the cart total is 100.00
-    And the code "SUMMER10" has expired
-    When the customer enters the code "SUMMER10"
-    Then the code is rejected
-    And the amount to pay is 100.00
+Scenario: An expired code is rejected
+  Given the cart total is 100.00
+  And the code "SUMMER10" has expired
+  When the customer enters the code "SUMMER10"
+  Then the code is rejected
+  And the amount to pay is 100.00
 ```
 
-<p class="src">Yksinkertaistettu esimerkki · Gherkin</p>
+<p class="src">Yksinkertaistettu esimerkki · Gherkin (BDD)</p>
 
 </div>
 <div>
 
 <h2>Miksi agentille?</h2>
 
-- **Tarpeen kielellä.** Tuoteomistaja voi lukea ja hyväksyä skenaarion ennen kuin koodia on.
-- **Agentti ei kirjoita omaa tavoitettaan.** Skenaariot sovitaan etukäteen, joten sama väärinkäsitys ei pääse sekä koodiin että testiin.
-- **Vakaa, koska rajapinta on vakaa.** Askelten toteutukset kutsuvat tyypitettyä rajapintaa, joten nekin voi kirjoittaa etukäteen.
+<ul>
+<li><strong>Tarpeen kielellä.</strong> Tuoteomistaja voi hyväksyä skenaarion ennen koodia.</li>
+<li><strong>Agentti ei kirjoita omaa tavoitettaan.</strong> Se pienentää riskiä, että sama väärinkäsitys päätyy koodiin ja testiin.</li>
+<li><strong>Esimerkki, ei laki.</strong> Skenaario tarkistaa vain nämä luvut.</li>
+</ul>
 
 </div>
 </div>
@@ -625,16 +717,94 @@ Hyväksymistesti kertoo, milloin työ on valmis <strong>sen mielestä, joka sit�
 </div>
 
 <!--
+[12:20–13:15]
+
+Tahti: hyvin kevyt.
+
+Tiketin kaksi kriteeriä ajettavina testeinä. Tämä on BDD:n ydin: käytös sovitaan esimerkkeinä tarpeen omistajan kanssa ennen toteutusta, ja esimerkeistä tulee ajettavia testejä. Gherkin on vain kirjoitustapa.
+
+Agentille: tavoite sovitaan etukäteen, joten agentti ei kirjoita omaa tavoitettaan. Se pienentää riskiä mutta ei poista sitä: hyväksytty skenaariokin voi olla väärä.
+
+Ja skenaario on esimerkki, ei laki: se tarkistaa vain nämä luvut.
+
+(Jos joku kysyy, miksi hyväksymiskriteerejä ei kirjoiteta yleisinä lakeina: osittain voi ja kannattaa. Kun kriteerissä lukee "aina" tai "ei koskaan", siitä kannattaa tehdä myös ominaisuustesti. Esimerkkejä tarvitaan silti, koska tuoteomistaja pystyy hyväksymään "100 € + AUTUMN20 → 80 €", mutta tuskin kaavaa. Lisäksi laki harvoin lyö lukkoon tarkkaa arvoa: alentamaton toteutus täyttää lait, ja täysin tarkka laki olisi toinen toteutus. Ja konkreettinen luku pakottaa päätökset esiin, kuten pyöristyksen. Tiivistettynä: esimerkki kertoo, mitä sovittiin, laki kertoo, mikä pätee aina. Tarvitaan molemmat.)
+-->
+
+---
+
+# Mikä jää leikkauksen ulkopuolelle?
+
+<div class="cols-wide-left" style="align-items: center">
+<div>
+<svg class="diagram" viewBox="0 0 540 360" role="img" aria-label="Sama kolmen joukon kuva. Kolme väärää ohjelmaa esimerkeistä: raaka luku ei käänny ja jää kaikkien joukkojen ulkopuolelle. Nollan prosentin alennusta väärin käsittelevä toteutus kääntyy ja läpäisee skenaariot mutta rikkoo lain. Toteutus, joka ei alenna lainkaan, kääntyy ja täyttää lait mutta ei skenaariota. Vain leikkaus hyväksytään.">
+  <rect x="6" y="6" width="528" height="348" rx="14" fill="#F6F5F7" stroke="#C8C8CC"/>
+  <text x="22" y="30" style="font-size:13px" fill="#545459" font-weight="700">Kaikki ohjelmat</text>
+  <circle cx="200" cy="145" r="100" fill="#B496CD" fill-opacity="0.28" stroke="#866A9D" stroke-width="2"/>
+  <circle cx="340" cy="145" r="100" fill="#41B4AF" fill-opacity="0.24" stroke="#00847F" stroke-width="2"/>
+  <circle cx="270" cy="245" r="100" fill="#F67B50" fill-opacity="0.18" stroke="#C4502A" stroke-width="2"/>
+  <g font-weight="700" style="font-size:13px">
+    <text x="118" y="104" fill="#50375F">Tyypit</text>
+    <text x="352" y="104" fill="#00847F">Ominaisuudet</text>
+    <text x="270" y="316" text-anchor="middle" fill="#C4502A">Hyväksymiskriteerit</text>
+  </g>
+  <circle cx="270" cy="182" r="8" fill="#192D2D"/>
+  <line x1="277" y1="188" x2="392" y2="280" stroke="#192D2D" stroke-width="1.2"/>
+  <text x="396" y="292" fill="#192D2D" font-weight="700" style="font-size:12.5px">hyväksytään</text>
+  <text x="396" y="308" fill="#545459" style="font-size:11.5px">agentin vapaus</text>
+  <g v-click="1">
+    <circle cx="60" cy="70" r="14" fill="#fff" stroke="#50375F" stroke-width="2.5"/>
+    <text x="60" y="75" text-anchor="middle" fill="#50375F" font-weight="700" style="font-size:14px">1</text>
+  </g>
+  <g v-click="2">
+    <circle cx="215" cy="228" r="14" fill="#fff" stroke="#00847F" stroke-width="2.5"/>
+    <text x="215" y="233" text-anchor="middle" fill="#00847F" font-weight="700" style="font-size:14px">2</text>
+  </g>
+  <g v-click="3">
+    <circle cx="270" cy="112" r="14" fill="#fff" stroke="#C4502A" stroke-width="2.5"/>
+    <text x="270" y="117" text-anchor="middle" fill="#C4502A" font-weight="700" style="font-size:14px">3</text>
+  </g>
+</svg>
+</div>
+<div>
+
+<div class="miss" v-click="1"><b class="n1">1</b><div><strong>Ei käänny.</strong> Väärä arvo, kuten 120&nbsp;%:n alennus.</div></div>
+<div class="miss" v-click="2"><b class="n2">2</b><div><strong>Laki kaatuu.</strong> 0&nbsp;%:n alennus muuttaa hintaa.</div></div>
+<div class="miss" v-click="3"><b class="n3">3</b><div><strong>Skenaario kaatuu.</strong> Alennusta ei tule lainkaan.</div></div>
+
+</div>
+</div>
+
+<div class="callout teal" style="margin-top: 12px">
+Yksikään tarkistus ei riitä yksin. Hyväksytään vain <strong>leikkaus</strong>.
+</div>
+
+<style>
+.miss { display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; margin: 0 0 16px; font-size: 15px; line-height: 1.4; }
+.miss > b { display: inline-flex; width: 26px; height: 26px; border-radius: 50%; align-items: center; justify-content: center; font-size: 14px; border: 2.5px solid; background: #fff; }
+.miss .n1 { color: #50375F; border-color: #50375F; }
+.miss .n2 { color: #00847F; border-color: #00847F; }
+.miss .n3 { color: #C4502A; border-color: #C4502A; }
+.miss code { white-space: nowrap; }
+</style>
+
+<!--
 [13:15–14:15]
 
-Kolmas: hyväksymistestit. Sama alennusesimerkki: edellisen dian tiketin kaksi kriteeriä ovat tässä kaksi skenaariota. Gherkin on tässä vain kirjoitustapa; olennaista on, että esimerkit on sovittu tarpeen omistajan kanssa.
+Tahti: pysähdy. Tämä on kohta, jossa kolme tarkistusta loksahtavat yhteen.
 
-Miksi tämä toimii agentille:
-- Skenaariot ovat sen kielellä, joka työn tarvitsi. Ne voi hyväksyä ennen toteutusta.
-- Ne ratkaisevat dian 3 ensimmäisen ongelman: kun agentti ei kirjoita omaa hyväksymiskriteeriään, sama väärinkäsitys ei päädy sekä koodiin että testiin.
-- Step-toteutukset kutsuvat tyypitettyä rajapintaa. Koska rajapinta on kiinni, nekin voi kirjoittaa etukäteen, ja ne kestävät toteutuksen muutokset.
+Sama kuva, nyt kun kaikki kolme on nähty. Jokainen tarkistus sulkee pois erilaisen väärän ohjelman.
 
-Siirtymä: miten nämä kolme liittyvät toisiinsa?
+[click] Ohjelma, joka yrittää käyttää väärää arvoa, kuten 120 prosentin alennusta, ei edes käänny. Tyypit hoitavat sen ennen yhtäkään testiä.
+
+[click] Ohjelma, joka kääntyy ja läpäisee skenaariot, mutta jossa nollan prosentin alennus muuttaa hintaa, rikkoo lain. Sen löytää vain ominaisuustesti.
+
+[click] Ohjelma, joka kääntyy ja täyttää lait, mutta ei alenna hintaa lainkaan, ei täytä tarvetta. Sen löytää vain hyväksymistesti.
+
+Yksikään tarkistus ei riitä yksin. Hyväksytään vain leikkaus, ja sen sisällä agentti saa valita vapaasti.
+
+(Jos joku kysyy tarkemmin: 1. applyDiscount(price, 120) ei käänny, koska raaka luku ei ole Percent. 2. discount || DEFAULT_PERCENT kohtelee nollaa puuttuvana alennuksena: kääntyy ja 20 prosentin skenaario menee läpi, mutta 0 % muuttaa hintaa. 3. return price täyttää lait mutta antaa 100 eurosta 100 euroa, ei 80. Kääntäen: aina 80 € antava toteutus läpäisee skenaarion mutta rikkoo lain 50 euron korilla.)
+
+Siirtymä: miksi tyypit ensin?
 -->
 
 ---
@@ -704,7 +874,7 @@ Tyypit antavat testeille <strong>vakaan rajapinnan</strong>, joten testit voi ki
 </div>
 
 <!--
-[14:15–15:30]
+[14:15–15:00]
 
 Yhteenveto kolmesta. Ne eivät ole rinnakkaisia vaihtoehtoja, vaan ne rakentuvat toistensa päälle.
 
@@ -714,73 +884,16 @@ Yhteenveto kolmesta. Ne eivät ole rinnakkaisia vaihtoehtoja, vaan ne rakentuvat
 
 Jos tarkistus kirjoitettaisiin suoraan toteutusta vastaan, se rikkoutuisi heti, kun agentti muuttaa toteutusta.
 
+Nyt joukkokuvan kolmella ympyrällä on sisältö, ja tyypit ovat se, jota vastaan kaksi muuta kirjoitetaan.
+
 Siirtymä: mistä nämä tarkistukset käytännössä tulevat?
 -->
 
 ---
 
-# Rajataan hyväksyttävien ohjelmien joukkoa
-
-<div class="cols-wide-left" style="align-items: center">
-<div>
-<svg class="diagram" viewBox="0 0 540 360" role="img" aria-label="Kaikkien ohjelmien sisällä kolme toisiaan leikkaavaa joukkoa: tyyppitarkistuksen läpäisevät, ominaisuudet täyttävät ja hyväksymiskriteerit täyttävät ohjelmat. Hyväksytään vain kolmen joukon leikkaus, joka on agentin vapaus.">
-  <rect x="6" y="6" width="528" height="348" rx="14" fill="#F6F5F7" stroke="#C8C8CC"/>
-  <text x="22" y="30" style="font-size:13px" fill="#545459" font-weight="700">Kaikki ohjelmat</text>
-  <!-- the three sets -->
-  <circle cx="200" cy="145" r="100" fill="#B496CD" fill-opacity="0.28" stroke="#866A9D" stroke-width="2"/>
-  <circle cx="340" cy="145" r="100" fill="#41B4AF" fill-opacity="0.24" stroke="#00847F" stroke-width="2"/>
-  <circle cx="270" cy="245" r="100" fill="#F67B50" fill-opacity="0.18" stroke="#C4502A" stroke-width="2"/>
-  <g font-weight="700" style="font-size:13px">
-    <text x="118" y="104" fill="#50375F">Tyypit</text>
-    <text x="352" y="104" fill="#00847F">Ominaisuudet</text>
-    <text x="270" y="316" text-anchor="middle" fill="#C4502A">Hyväksymiskriteerit</text>
-  </g>
-  <g fill="#545459" style="font-size:11.5px">
-    <text x="118" y="120">kääntyy</text>
-    <text x="352" y="120">lait pätevät</text>
-    <text x="270" y="332" text-anchor="middle">skenaariot läpi</text>
-  </g>
-  <!-- the intersection -->
-  <circle cx="270" cy="182" r="8" fill="#192D2D"/>
-  <line x1="277" y1="188" x2="392" y2="280" stroke="#192D2D" stroke-width="1.2"/>
-  <text x="396" y="292" fill="#192D2D" font-weight="700" style="font-size:12.5px">hyväksytään</text>
-  <text x="396" y="308" fill="#545459" style="font-size:11.5px">agentin vapaus</text>
-</svg>
-</div>
-<div>
-
-- Jokainen tarkistus **rajaa** hyväksyttävien ohjelmien joukkoa.
-- Hyväksytään vain **leikkaus**: kääntyy, lait pätevät ja skenaariot menevät läpi.
-- Leikkauksessa on yhä **monta** ratkaisua. Se on agentin vapaus.
-- Ihminen vastaa siitä, **osuvatko rajat** tarkoitukseen.
-
-<p class="tiny" style="margin-top: 14px">Käsitteellinen malli hyväksynnästä. Ei väite siitä, että mallin generointia rajattaisiin muodollisesti.</p>
-
-</div>
-</div>
-
-<!--
-[15:30–16:30]
-
-Kolme tarkistusta kuvana.
-
-- Ulompi laatikko: kaikki ohjelmat, joita agentti voisi kirjoittaa.
-- Lila: ohjelmat, jotka kääntyvät sopimusta vasten. Tyypit rajaavat.
-- Teal: ohjelmat, joissa lait pätevät. Ominaisuustestit rajaavat.
-- Oranssi: ohjelmat, jotka täyttävät hyväksymiskriteerit. Skenaariot rajaavat.
-
-Jokainen yksinään jättää paljon väärää sisään. Kääntyvä ohjelma voi rikkoa lain. Lain täyttävä ohjelma voi silti olla väärä tarpeen kannalta. Skenaariot läpäisevä ohjelma voi toimia vain juuri niillä esimerkeillä.
-
-Hyväksytään vain leikkaus. Sen sisällä agentti saa valita vapaasti: siinä on yhä monta erilaista toteutusta. Se on juuri se "tarpeeksi tiukka ja tarpeeksi löysä" -alue dialta 4.
-
-Varovaisuus: tämä on hyväksymisen malli, ei väite siitä, että kielimallin dekoodausta rajattaisiin muodollisesti. Agentti voi kirjoittaa mitä tahansa; me päätämme, mitä otamme vastaan.
-
-Ihminen vastaa siitä, osuvatko rajat siihen, mitä oikeasti tarkoitimme. Leikkaus voi olla väärässä paikassa, jos tyypit, lait tai kriteerit on kirjoitettu väärin.
--->
-
----
-
 # Mistä tarkistukset tulevat?
+
+<p class="h1-sub">Kuka kirjoittaa, ja mistä?</p>
 
 <p class="muted" style="margin-top: -6px">Ylhäältä alas: epämääräisestä tarpeesta yksityiskohtiin.</p>
 
@@ -793,7 +906,7 @@ Ihminen vastaa siitä, osuvatko rajat siihen, mitä oikeasti tarkoitimme. Leikka
 
 - Tuoteomistaja ja tiimi sopivat
 - Mitä tarpeen omistaja odottaa näkevänsä
-- Kirjoitetaan jo nyt, kuten dialla 11
+- Kirjoitetaan jo nyt, kuten dialla 12
 
 </div>
 <div class="card teal">
@@ -827,11 +940,11 @@ Kaikki kolme päätetään <strong>ennen</strong> kuin agentti aloittaa toteutuk
 </style>
 
 <!--
-[16:30–17:15]
+[15:00–16:10]
 
-Mistä nämä kolme tulevat käytännössä? Eri lähteistä, eri ihmisiltä, ja ylhäältä alas: epämääräisestä asiakkaan tarpeesta yhä tarkempiin yksityiskohtiin.
+Tähän asti katsoimme, mitä tarkistukset ovat. Nyt: kuka ne kirjoittaa ja mistä ne löytyvät. Eri lähteistä, eri ihmisiltä, ja ylhäältä alas: epämääräisestä asiakkaan tarpeesta yhä tarkempiin yksityiskohtiin.
 
-Hyväksymiskriteerit tulevat tiketistä ja vaatimusmäärittelystä. Ne ovat tuoteomistajan ja tiimin sopimus siitä, mitä tarpeen omistaja odottaa näkevänsä. Useimmilla ne ovat jo olemassa, kuten dian 11 tiketissä.
+Hyväksymiskriteerit tulevat tiketistä ja vaatimusmäärittelystä. Ne ovat tuoteomistajan ja tiimin sopimus siitä, mitä tarpeen omistaja odottaa näkevänsä. Useimmilla ne ovat jo olemassa, kuten dian 12 tiketissä.
 
 Ominaisuudet tulevat insinöörin päättelystä. Ne ovat abstraktimpia ja teknisempiä kuin kriteerit: lait, joita kukaan ei kirjoittanut tikettiin, mutta joihin kaikki luottavat. Kriteerit voivat inspiroida niitä, mutta ne eivät toista kriteerejä.
 
@@ -891,17 +1004,17 @@ Konkreettiset esimerkit paljastavat kysymykset <strong>ennen</strong> kuin agent
 </style>
 
 <!--
-[17:15–18:45]
+[16:10–16:45]
 
-Hyväksymiskriteerit tulevat tiketistä ja vaatimusmäärittelystä. Mutta hyvät kriteerit eivät synny itsestään: ne syntyvät, kun epämääräinen vaatimus pilkotaan säännöiksi ja konkreettisiksi esimerkeiksi.
+Tahti: kevyt.
 
-Vasemmalla tyypillinen vaatimus: "kampanjakoodit toimivat kassalla". Se ei kerro, mitä pitää tapahtua.
+Hyväksymiskriteerit tulevat tiketistä ja vaatimusmäärittelystä, mutta ne eivät synny itsestään. Niihin pitää käyttää aikaa.
 
-Oikealla sama Example Mapping -tekniikalla (Matt Wynne). Jokainen sääntö saa konkreettiset esimerkit. Esimerkeistä tulee hyväksymistestien skenaariot, kuten dialla 12.
+Tämä on BDD:n keskusteluvaihe: ennen kuin skenaarioita kirjoitetaan, sovitaan säännöt, esimerkit ja avoimet kysymykset. Epämääräinen vaatimus pilkotaan säännöiksi ja konkreettisiksi esimerkeiksi. Samalla löytyy avoimia kysymyksiä: miten pyöristetään? Voiko kahta koodia käyttää yhtä aikaa?
 
-Tärkein osa on oikea sarake: avoimet kysymykset. Kun esimerkkiin pitää kirjoittaa oikea luku, kysymykset tulevat esiin. 0,97 euron tuote ja 20 prosentin alennus: 0,776 euroa. Alas pyöristettynä 0,77, lähimpään 0,78. Kumpi? Entä kaksi koodia samaan aikaan?
+Nämä ovat ratkaisevia päätöksiä, eikä agentti voi tehdä niitä puolestasi. Jos niihin ei vastata ennen delegointia, agentti arvaa, eikä kerro arvanneensa.
 
-Agentille tämä on ratkaiseva: jokainen kysymys, johon ei vastata ennen delegointia, on kohta, jossa agentti arvaa. Ja se arvaa hiljaa, eikä kerro arvanneensa.
+(Jos joku kysyy: tekniikka on Example Mapping, Matt Wynne. Pyöristysesimerkki: 0,97 € ja 20 % on 0,776 €, eli alas pyöristettynä 0,77 ja lähimpään 0,78.)
 -->
 
 ---
@@ -913,10 +1026,10 @@ Agentille tämä on ratkaiseva: jokainen kysymys, johon ei vastata ennen delegoi
 <div class="law-grid">
 <div class="law-card"><span class="tag">invariantti</span><p>Alennettu hinta on <strong>aina</strong> nollan ja alkuperäisen välissä.</p><code>0 ≤ apply(p, d) ≤ p</code></div>
 <div class="law-card"><span class="tag">invariantti</span><p>Summa on <strong>aina</strong> kokonaisia senttejä.</p><code>total(cart) ∈ ℕ senttiä</code></div>
-<div class="law-card"><span class="tag">idempotenssi</span><p>Saman koodin käyttäminen kahdesti on sama kuin kerran.</p><code>use(use(c, k), k) = use(c, k)</code></div>
+<div class="law-card focus"><span class="tag">idempotenssi</span><p>Saman koodin syöttäminen uudelleen ei muuta mitään. <em>Tämä on päätös.</em></p><code>use(use(c, k), k) = use(c, k)</code></div>
 <div class="law-card"><span class="tag">monotonisuus</span><p>Suurempi alennus ei <strong>koskaan</strong> anna suurempaa hintaa.</p><code>d₁ ≤ d₂ ⇒ apply(p, d₂) ≤ apply(p, d₁)</code></div>
 <div class="law-card"><span class="tag">järjestys&shy;riippumattomuus</span><p>Tuotteiden järjestys korissa ei vaikuta summaan.</p><code>total(shuffle(items)) = total(items)</code></div>
-<div class="law-card"><span class="tag">edestakaisuus</span><p>Koodin lisääminen ja poistaminen palauttaa korin ennalleen.</p><code>remove(use(c, k), k) = c</code></div>
+<div class="law-card"><span class="tag">edestakaisuus</span><p>Uuden koodin lisääminen ja poistaminen palauttaa korin ennalleen.</p><code>k ∉ c ⇒ remove(use(c, k), k) = c</code></div>
 </div>
 
 <div class="callout teal" style="margin-top: 14px">
@@ -929,25 +1042,22 @@ Kriteeri kertoo, mitä asiakas <strong>näkee</strong>. Ominaisuus kertoo, mitä
 .law-card .tag { display: inline-block; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--l-teal-deep); }
 .slidev-layout .law-card p { font-size: 14px; line-height: 1.35; margin: 4px 0 6px; }
 .slidev-layout .law-card code { font-size: 11.5px; white-space: nowrap; }
+.law-card:not(.focus) { opacity: 0.55; }
+.law-card.focus { border: 2px solid var(--l-teal); border-top-width: 4px; background: rgba(65, 180, 175, 0.08); }
 </style>
 
 <!--
-[18:45–20:15]
+[16:45–17:45]
 
-Ominaisuudet ovat abstraktimpia kuin hyväksymiskriteerit. Kriteeri kertoo, mitä asiakas näkee tietyssä tilanteessa. Ominaisuus kertoo, mitä järjestelmä ei koskaan riko, millä tahansa syötteellä.
+Tahti: kevyt. Valitse yksi laki, älä käy ruudukkoa läpi.
 
-Nämä tulevat insinöörin päättelystä. Niitä ei yleensä lue tiketissä, mutta kassa, laskutus ja raportointi luottavat niihin:
-- Invariantit: hinta pysyy nollan ja alkuperäisen välissä, summa on kokonaisia senttejä.
-- Idempotenssi: saman koodin käyttäminen toiseen kertaan ei muuta mitään.
-- Monotonisuus: isompi alennus ei koskaan nosta hintaa.
-- Järjestysriippumattomuus: korin sisällön järjestys ei vaikuta summaan.
-- Edestakaisuus: koodin lisääminen ja poistaminen palauttaa korin ennalleen.
+Tiketissä lukee, mitä asiakas näkee. Insinööri lisää lait, joihin muut järjestelmän osat luottavat, vaikka kukaan ei kirjoittanut niitä tikettiin.
 
-Kaavat ovat merkintätapa, eivät koodia. Jokaisesta tulee yksi ominaisuustesti.
-
-Päällekkäisyyttä kriteerien kanssa on luonnostaan: esimerkiksi edellisen dian avoin kysymys pyöristyksestä ratkeaa lopulta sekä kriteerinä että "kokonaisia senttejä" -invarianttina. Ero on näkökulmassa: kriteeri on asiakkaan esimerkki, ominaisuus on tekninen lupaus.
+Esimerkiksi idempotenssi: saman koodin syöttäminen uudelleen ei muuta mitään. Harva asiakas tulee ajatelleeksi sitä, mutta teknisesti se on oleellinen: jos frontendissä on uudelleenyrityslogiikka, se ei voi tietää, menikö ensimmäinen syöttö jo läpi backendissä. Laki on kuitenkin päätös, ei luonnonlaki, joten se kirjoitetaan vasta, kun päätös on tehty.
 
 Agentti voi ehdottaa lakeja, mutta ihminen päättää, mitkä niistä järjestelmän pitää täyttää.
+
+(Jos joku kysyy edestakaisuudesta: laki pätee vain, jos koodi ei ollut jo korissa. Edellytykset ovat osa lakia.)
 -->
 
 ---
@@ -956,12 +1066,12 @@ Agentti voi ehdottaa lakeja, mutta ihminen päättää, mitkä niistä järjeste
 
 <p class="h1-sub"><span class="step">Tyypit</span> · Mahdottomat tilat mahdottomiksi</p>
 
-<div class="cols code-sm" style="gap: 22px; margin-top: 6px">
+<div class="cols code-md" style="gap: 22px; margin-top: 6px">
 <div>
 
 <h3 style="color: var(--l-red)">✗ Sallii mahdottomat tilat</h3>
 
-```ts
+```ts {1-6|8-10}{at:1,finally:'all'}
 type Campaign = {
   code: string;
   percent: number;
@@ -969,11 +1079,9 @@ type Campaign = {
   expiredAt?: Date;
 };
 
-// Kaikki nämä kääntyvät:
-const a: Campaign =
-  { code: '', percent: 150, expired: false };
-const b: Campaign =
-  { code: 'X', percent: 10, expired: true };
+// Kääntyy: tyhjä koodi, 120 %, ei päivää
+const c: Campaign =
+  { code: '', percent: 120, expired: true };
 ```
 
 </div>
@@ -981,7 +1089,7 @@ const b: Campaign =
 
 <h3 style="color: var(--l-teal-deep)">✓ Mahdoton tila ei käänny</h3>
 
-```ts
+```ts {none|1-5|7-10|all}{at:2}
 type Campaign =
   | { status: 'active';
       code: Code; percent: Percent }
@@ -989,32 +1097,34 @@ type Campaign =
       code: Code; expiredAt: Date };
 
 declare function applyCode(
-  cart: Cart,
-  code: Code,
-): CheckoutResult;
+  price: Money,
+  campaign: Campaign,
+): Money;
 ```
 
 </div>
 </div>
 
-<p class="src">Yksinkertaistettu esimerkki · Code ja Percent ovat brändättyjä tyyppejä kuten dialla 7</p>
+<p class="src">Yksinkertaistettu esimerkki · Code ja Percent ovat brändättyjä tyyppejä kuten dialla 9</p>
 
-<div class="callout teal" style="margin-top: 12px">
-Mitä ei voi esittää, sitä <strong>agentti ei voi kirjoittaa</strong>. Rajapinta pysyy, toteutus saa vaihtua.
+<div class="callout teal" style="margin-top: 12px" v-click="4">
+Mitä ei voi esittää, sitä <strong>agentti ei kirjoita vahingossa</strong>. Rajapinta pysyy, toteutus saa vaihtua.
 </div>
 
 <!--
-[20:15–21:30]
+[17:45–19:00]
 
-Tyypit tulevat ohjelmoijalta, ja ajattelutapa on turvallisuus rakenteella.
+Tahti: kevyt. Yksi lause per korostus.
 
-Vasemmalla tavallinen tyyppi. Se sallii tiloja, joita ei pitäisi olla: tyhjä koodi, 150 prosentin alennus, tai vanhentunut kampanja ilman vanhenemispäivää. Kaikki kääntyvät, joten jokaisen funktion pitää muistaa tarkistaa ne. Ja agentin pitää muistaa.
+Tyypit tulevat ohjelmoijalta: suunnitellaan ne niin, ettei virheellisiä tiloja voi esittää. Vasen tyyppi näyttää kenttä kerrallaan järkevältä.
 
-Oikealla sama asia unionityyppinä. Aktiivisella kampanjalla on prosentti, vanhentuneella on vanhenemispäivä. Vanhentunutta ilman päivää ei voi edes kirjoittaa. Code ja Percent ovat brändättyjä tyyppejä, joten tyhjää koodia tai 150 prosenttia ei saa läpi rajasta.
+[click] Silti tämä kääntyy: tyhjä koodi, 120 % ja vanhentunut kampanja ilman päivää.
 
-Alla vakaa rajapinta: applyCode ottaa ostoskorin ja koodin ja palauttaa tuloksen. Tätä vastaan ominaisuus- ja hyväksymistestit kirjoitetaan. Toteutus sen takana saa vaihtua.
+[click] Unionityyppinä kampanja on joko aktiivinen tai vanhentunut, ja kaikki kolme virhettä ovat käännösvirheitä.
 
-Tämä on taas "Älä pyydä agenttia muistamaan" -ajatus: mahdottomat tilat ovat käännösvirheitä.
+[click] Rajapinta käyttää vain tuttuja tyyppejä. Vanhentuneella kampanjalla ei ole prosenttia, joten sitä ei voi käyttää alennukseen vahingossa.
+
+[click] Mitä ei voi esittää, sitä agentti ei kirjoita vahingossa.
 -->
 
 ---
@@ -1029,7 +1139,7 @@ class: brand statement
 <p class="subtitle">Tyypit, ominaisuudet ja hyväksymiskriteerit kertovat, mitä järjestelmä lupaa. <strong>Miten</strong> se tehdään, jää agentille.</p>
 
 <!--
-[21:30–21:45]
+[19:00–19:15]
 
 Tiivistys tähänastisesta yhteen lauseeseen: määrittele järjestelmä, älä toteutusta.
 
@@ -1042,33 +1152,33 @@ Siirtymä: toinen askel. Miten agentti eristetään tarkistuksesta?
 
 # Eristä agentti tarkistuksesta
 
-<p class="h1-sub"><span class="step">1 / 3</span> · Agentin työtila</p>
+<p class="h1-sub"><span class="step">1 / 2</span> · Agentin työtila</p>
 
-<div class="cols" style="margin-top: 8px; gap: 22px; align-items: start; grid-template-columns: 1.15fr 1fr">
+<div class="cols" style="margin-top: 8px; gap: 22px; align-items: start; grid-template-columns: 1.05fr 1fr">
 <div>
 
 <pre class="tree">
 checkout/
-├── README.md                  <i>vaatimukset</i>
-├── package.json               <i>skriptit</i>
-├── tsconfig.json              <i>kääntäjä</i>
+├── README.md               <i>vaatimukset</i>
+├── package.json            <i>skriptit</i>
+├── tsconfig.json           <i>kääntäjä</i>
 ├── src/
-│   ├── contracts.ts           <i>tyypit ja rajapinnat</i>
-│   ├── constructors.ts        <i>percent(), money()</i>
-│   └── <b>implementation/</b>        <b>✎ kirjoitus</b>
+│   ├── contracts.ts        <i>tyypit ja rajapinnat</i>
+│   ├── constructors.ts     <i>percent(), money()</i>
+│   └── <b>implementation/</b>     <b>✎ kirjoitus</b>
 │       └── <b>apply-code.ts</b>
 ├── test/
-│   ├── properties.test.ts     <i>ominaisuustestit</i>
-│   └── features/              <i>hyväksymistestit</i>
+│   ├── properties.test.ts  <i>ominaisuustestit</i>
+│   └── features/           <i>hyväksymistestit</i>
 │       ├── campaign-codes.feature
 │       └── steps.ts
-└── <b>dist/</b>                      <b>✎ kirjoitus</b>
+└── <b>dist/</b>                   <b>✎ kirjoitus</b>
 </pre>
 
 <p class="src">Demorepon rakenne alennusesimerkin nimillä · kaikki muu kuin <b style="color: var(--l-teal-deep)">✎</b>: vain luku</p>
 
 </div>
-<div class="code-sm">
+<div class="code-ws">
 
 ```toml
 # Nimetty käyttöoikeusprofiili (Codex CLI)
@@ -1088,8 +1198,6 @@ enabled = false
 
 <p class="src">Demorepon profiili, muotoiltu uudelleen</p>
 
-<p class="small" style="margin-top: 10px">Verkko pois. Ei hyväksyntäpyyntöjä. Agentti ajaa käännöksen ja testit <strong>itse</strong> ja korjaa niiden palautteen perusteella.</p>
-
 </div>
 </div>
 
@@ -1098,30 +1206,31 @@ Agentti saa muuttaa toteutusta vapaasti, mutta <strong>ei sopimusta</strong>.
 </div>
 
 <style>
-.slidev-layout .tree { margin: 0; padding: 12px 14px; background: var(--l-gray-50); border-radius: 6px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12.5px; line-height: 1.5; color: var(--l-gray-700); white-space: pre; }
+.slidev-layout .tree { margin: 0; padding: 12px 14px; background: var(--l-gray-50); border-radius: 6px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 14px; line-height: 1.45; color: var(--l-gray-700); white-space: pre; }
+.code-ws pre, .code-ws pre code { font-size: 13.5px !important; line-height: 20px !important; }
 .slidev-layout .tree i { font-style: normal; color: var(--l-gray-500); }
 .slidev-layout .tree b { color: var(--l-teal-deep); font-weight: 700; }
 </style>
 
 <!--
-[21:45–23:15]
+[19:15–20:15]
+
+Tahti: kevyt. Älä lue profiilia rivi riviltä.
 
 Toinen askel: eristä agentti tarkistuksesta. Ensin: missä agentti työskentelee.
 
-Agentti saa oman kopion lähtötilasta. Puussa näkyy, mitä se saa kirjoittaa: vain src/implementation/ ja dist/. Kaikki muu on vain luku -tilassa: vaatimukset README:ssä, tyypit ja rajapinnat contracts.ts:ssä, validoivat konstruktorit, testit, skriptit ja kääntäjäasetukset. Rakenne on sama kuin demorepossa, nimet alennusesimerkistä. Verkko on pois, eikä agentti voi pyytää lisäoikeuksia.
+Agentti saa oman kopion. Se saa kirjoittaa vain toteutukseen ja dist-kansioon; sopimus, testit ja asetukset ovat vain luku -tilassa. Verkko on pois, eikä agentti voi pyytää lisäoikeuksia.
 
-Tämä on se raja, joka erottaa "määritelty järjestelmä" ja "agentin vapaus" toisistaan. Sopimus pysyy, toteutus saa muuttua.
+Agentti ajaa testit itse ja korjaa niiden perusteella. Tämä on dian 2 silmukka, nyt meidän päättämillämme tarkistuksilla.
 
-Agentti ajaa itse käännöksen ja testit ja korjaa niiden perusteella. Tämä on dian 2 silmukka: nyt palaute tulee tarkistuksista, jotka me päätimme.
-
-Oikealla demorepon oikea profiili Codex CLI:lle, muotoiltu uudelleen luettavaksi. Sama onnistuu muillakin agenteilla: tiedosto-oikeuksilla, konttiin rajaamalla tai CI-säännöillä.
+Oikealla oikea Codex CLI -profiili. Sama onnistuu muillakin agenteilla: tiedosto-oikeuksilla, kontilla tai CI-säännöillä.
 -->
 
 ---
 
 # Eristä agentti tarkistuksesta
 
-<p class="h1-sub"><span class="step">2 / 3</span> · Ohje agentille</p>
+<p class="h1-sub"><span class="step">2 / 2</span> · Ohje agentille</p>
 
 <div class="cols-wide-left" style="margin-top: 8px; grid-template-columns: 1.5fr 1fr; gap: 22px">
 <div>
@@ -1146,13 +1255,17 @@ Oikealla demorepon oikea profiili Codex CLI:lle, muotoiltu uudelleen luettavaksi
 
 <div class="map-row"><span>Sama väärinkäsitys kahdesti</span><b>Agentti ei kirjoita tarkistuksia</b></div>
 <div class="map-row"><span>Testejä voi muuttaa</span><b>Kielletty ja lukittu</b></div>
-<div class="map-row"><span>Erehtyy valmiudestaan</span><b>Ajetaan uudelleen</b></div>
+<div class="map-row"><span>Erehtyy valmiudestaan</span><b>Ajetaan uudelleen puhtaassa kopiossa</b></div>
 
 </div>
 </div>
 
 <div class="callout" style="margin-top: 14px">
 Ohje kertoo säännöt. <strong>Työtila ja tarkistus</strong> pakottavat ne.
+</div>
+
+<div class="callout teal" style="margin-top: 10px">
+Valmis = agentti lopetti <strong>ja</strong> riippumaton tarkistus meni läpi. Agentin oma ”testit menevät läpi” ei ratkaise.
 </div>
 
 <style>
@@ -1165,66 +1278,22 @@ Ohje kertoo säännöt. <strong>Työtila ja tarkistus</strong> pakottavat ne.
 </style>
 
 <!--
-[23:15–24:30]
+[20:15–21:55]
 
 Toinen asia: mitä agentille sanotaan.
 
-Vasemmalla demorepon kehote lyhennettynä ja suomennettuna. Kolme kohtaa on tärkeimpiä:
+Vasemmalla agentin kehote lyhennettynä ja suomennettuna. Kolme kohtaa on tärkeimpiä:
 - Älä heikennä tarkistuksia saadaksesi ne läpi. Helpoin tie vihreään ei saa olla tarkistuksen muuttaminen.
 - Jos tarkistus on mielestäsi väärä, pysähdy ja merkitse se. Agentti voi olla oikeassa: vaatimus voi olla väärin. Mutta sen ratkaisee ihminen, ei agentti hiljaa.
 - Kerro agentille, että tarkistukset ajetaan uudelleen. Raportti ei ole hyväksyntä.
 
-Oikealla sama kytkettynä dian 3 kolmeen ongelmaan. Sama väärinkäsitys ei pääse kahdesti, koska agentti ei kirjoita tarkistuksia. Testejä ei voi muuttaa, koska se on sekä kielletty että lukittu. Ja agentin omaa valmiusarviota ei tarvita, koska tarkistukset ajetaan uudelleen.
+Oikealla sama kytkettynä dian 3 kolmeen ongelmaan. Agentin väärinkäsitys ei kulje testeihin, koska agentti ei kirjoita tarkistuksia. Testejä ei voi muuttaa, koska se on sekä kielletty että lukittu. Ja agentin omaa valmiusarviota ei tarvita, koska tarkistukset ajetaan uudelleen.
 
 Ohje yksin ei riitä. Siksi työtila lukitsee tiedostot ja tarkistus ajetaan erikseen.
--->
 
----
+Lopuksi: tarkistukset ajetaan uudelleen puhtaassa kopiossa, kuten CI:ssä. Agentilta tulee mukaan vain toteutus. Valmis tarkoittaa kahta asiaa yhtä aikaa: agentti lopetti, ja riippumaton tarkistus meni läpi. Agentin raportti on hyödyllistä tietoa, mutta ei hyväksyntä.
 
-# Eristä agentti tarkistuksesta
-
-<p class="h1-sub"><span class="step">3 / 3</span> · Luota tarkistukseen, ei raporttiin</p>
-
-<svg class="diagram" viewBox="0 0 880 262" style="margin-top: 6px" role="img" aria-label="Kolme kopiota: lähtötila, agentin työtila ja tarkistuskopio. Tarkistuskopioon siirtyy vain toteutus.">
-  <defs>
-    <marker id="arr-wf" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#50375F"/></marker>
-  </defs>
-  <rect x="8" y="30" width="250" height="160" rx="10" fill="#fff" stroke="#50375F" stroke-width="2.5"/>
-  <text x="24" y="58" style="font-size:16px" font-weight="900" fill="#50375F">1 · Lähtötila</text>
-  <g style="font-size:13px" fill="#1A1A1D"><text x="24" y="84">luotettu kopio tarkistuspisteestä</text><text x="24" y="104">sopimus · testit · asetukset</text><text x="24" y="132" fill="#545459">toteutus vielä tynkä</text><text x="24" y="160" fill="#00847F" font-weight="700">ei agentin kirjoitettavissa</text></g>
-  <rect x="315" y="30" width="250" height="160" rx="10" fill="#F1EAF7" stroke="#B496CD" stroke-width="2.5"/>
-  <text x="331" y="58" style="font-size:16px" font-weight="900" fill="#50375F">2 · Työtila</text>
-  <g style="font-size:13px" fill="#1A1A1D"><text x="331" y="84">agentti toteuttaa tässä</text><text x="331" y="110" font-weight="700">kirjoitus: vain toteutus</text><text x="331" y="132" fill="#545459">kaikki muu: vain luku</text><text x="331" y="152" fill="#545459">verkko pois</text><text x="331" y="172" fill="#545459">ajaa testit itse</text></g>
-  <rect x="622" y="30" width="250" height="160" rx="10" fill="#fff" stroke="#00847F" stroke-width="2.5"/>
-  <text x="638" y="58" style="font-size:16px" font-weight="900" fill="#00847F">3 · Tarkistuskopio</text>
-  <g style="font-size:13px" fill="#1A1A1D"><text x="638" y="84">tuore lähtötila</text><text x="638" y="104">+ ehdokkaan toteutus</text><text x="638" y="132" font-weight="700">kaikki tarkistukset</text><text x="638" y="152" fill="#545459">verkko pois</text></g>
-  <line x1="260" y1="92" x2="312" y2="92" stroke="#50375F" stroke-width="2" marker-end="url(#arr-wf)"/>
-  <text x="286" y="84" style="font-size:12px" text-anchor="middle" fill="#545459">kopio</text>
-  <line x1="567" y1="92" x2="619" y2="92" stroke="#50375F" stroke-width="2" marker-end="url(#arr-wf)"/>
-  <text x="593" y="20" style="font-size:12px" text-anchor="middle" fill="#50375F" font-weight="700">vain toteutus siirtyy</text>
-  <line x1="593" y1="24" x2="593" y2="84" stroke="#C8C8CC" stroke-dasharray="3 3"/>
-  <path d="M133 192 V230 H747 V194" fill="none" stroke="#50375F" stroke-width="2" marker-end="url(#arr-wf)"/>
-  <text x="440" y="252" style="font-size:12px" text-anchor="middle" fill="#545459">tuore kopio lähtötilasta: agentin muutokset testeihin eivät voi kulkea tätä reittiä</text>
-</svg>
-
-<div class="callout teal" style="margin-top: 10px">
-Valmis = agentti lopetti <strong>ja</strong> riippumaton tarkistus meni läpi. Agentin oma ”testit menevät läpi” ei ratkaise.
-</div>
-
-<!--
-[24:30–26:00]
-
-Kolmas asia: miten tulos tarkistetaan.
-
-1. Lähtötila: luotettu kopio tarkistuspisteestä. Sopimus ja testit ovat valmiina, toteutus on vielä tynkä. Tämä on agentin kirjoitusoikeuksien ulkopuolella.
-2. Työtila: kopio lähtötilasta. Agentti toteuttaa tässä ja ajaa testit itse. Kirjoittaa saa vain toteutukseen.
-3. Tarkistuskopio: tuore kopio lähtötilasta, johon siirretään vain ehdokkaan toteutus. Kaikki tarkistukset ajetaan siellä, verkko pois.
-
-Miksi kolme kopiota eikä yksi? Koska silloin ei tarvitse luottaa siihen, että agentti jätti testit rauhaan. Vaikka työtilan testit olisivat muuttuneet, tarkistus ajetaan alkuperäisillä.
-
-Valmis tarkoittaa kahta asiaa yhtä aikaa: agentti lopetti onnistuneesti, ja riippumaton tarkistus meni läpi. Agentin raportti on hyödyllistä tietoa, mutta ei hyväksyntä.
-
-Demorepossa tämä on yksi skripti: se tekee kopiot, käynnistää agentin rajatulla profiililla ja ajaa tarkistukset tuoreessa kopiossa.
+(Jos joku kysyy, miksi puhdas kopio, kun agentti ei voi muuttaa testejä: se on toinen varmistus, joka ei riipu siitä, että käyttöoikeusprofiili on oikein. Se myös rakentaa kaiken lähdekoodista, joten agentin dist-kansio tai välimuistit eivät vaikuta tulokseen.)
 -->
 
 ---
@@ -1321,7 +1390,7 @@ Suurin osa ihmisen työstä ja huomiosta menee <strong>tarkistusten rakentamisee
 </div>
 
 <!--
-[26:00–27:00]
+[21:55–22:40]
 
 Mitä tämä tarkoittaa ihmisen työlle? Se siirtyy.
 
@@ -1346,7 +1415,7 @@ class: brand statement
 <p class="subtitle">Aitauksen sisällä agentti saa tehdä mitä haluaa. Ulos pääsee vain tarkistuksen portista.</p>
 
 <!--
-[27:00–27:15]
+[22:40–22:50]
 
 Kolmas askel: päästä agentti irti.
 
@@ -1406,13 +1475,13 @@ Siirtymä: tässä sen tulos.
 </style>
 
 <!--
-[27:15–28:15]
+[22:50–23:35]
+
+Sano ensin: "Tämä on keksitty esimerkki PR:stä, mutta tällaisia näkee."
 
 Kaikki on tehty oikein. Tyypit, ominaisuustestit ja hyväksymistestit on päätetty ennen delegointia. Agentti on kirjoittanut vain toteutushakemistoon. Tarkistukset on ajettu uudelleen tuoreessa kopiossa, ja kaikki ovat vihreänä. Ja agentti sanoo taas: "Done! ✅".
 
-PR on keksitty havainnollistus. Sanon tämän ääneen.
-
-[klikkaus] Mergeäisitkö tämän lukematta diffiä?
+[click] Mergeäisitkö tämän lukematta diffiä?
 
 Kysy salilta, kädet ylös. Anna hetki aikaa.
 
@@ -1437,15 +1506,19 @@ Tarkistukset eivät poista katselmointia. Ne kertovat, <strong>mihin</strong> ka
 </div>
 
 <!--
-[28:15–29:15]
+[23:35–24:45]
 
 Nopea rehellisyyskierros. Vihreä tarkoittaa: koodatut odotukset täyttyivät. Ei enempää.
 
 - Vaatimukset: jos sääntö itse on väärin, kaikki tarkistukset ovat väärin samalla tavalla.
-- Kattavuus: mitä sopimus ja lait eivät mainitse, sitä ei ole tarkistettu. Ominaisuustestien generaattorit tuottavat vain sen, mitä niille kerrottiin.
-- Luottamus suoritukseen: ehdokas ajetaan samassa prosessissa kuin testit. Se voisi esimerkiksi lopettaa testiprosessin aikaisin. Ja TypeScriptin pakotiet, as, any ja @ts-ignore, nojaavat ohjeeseen ja katselmointiin, ellei lint-sääntö valvo niitä. Tämä on rajojen demo, ei suojaus vihamielistä koodia vastaan.
+- Kattavuus: mitä sopimus ja lait eivät mainitse, sitä ei ole tarkistettu.
+- Luottamus suoritukseen: tyyppijärjestelmän pakoteitä voi kiertää, ja siinä nojataan yhä ohjeeseen ja katselmointiin.
 - Tuotanto: vihreä ei väitä tuotantovalmiutta.
-- Ei-toiminnalliset vaatimukset: onko koodi ylläpidettävää, helppo ymmärtää ja muuttaa, seuraako se tiimin tapoja, onko se riittävän nopea. Onko ratkaisu järkevä: ei turhaa monimutkaisuutta, ei uusia riippuvuuksia ilman syytä, sopii muuhun arkkitehtuuriin. Tarkistukset eivät kerro näistä mitään, ellei niitä ole erikseen kirjoitettu tarkistuksiksi, esimerkiksi lint- tai arkkitehtuurisäännöiksi. Muuten ne jäävät katselmoinnille. Juuri tähän diffiä luetaan.
+- Ei-toiminnalliset vaatimukset: onko koodi ylläpidettävää, helppo ymmärtää ja muuttaa, seuraako se tiimin tapoja? Onko ratkaisu järkevä: ei turhia riippuvuuksia, sopii arkkitehtuuriin?
+
+Tarkistukset eivät poista katselmointia. Ne kertovat, mihin katselmointia kannattaa käyttää.
+
+(Jos joku kysyy suorituksesta: ehdokas ajetaan samassa prosessissa kuin testit, joten se voisi esimerkiksi lopettaa testiprosessin aikaisin. Pakotiet ovat as, any ja @ts-ignore, ellei lint-sääntö valvo niitä. Asetelma rajaa vahinkoja, mutta ei suojaa vihamieliseltä koodilta.)
 
 Siirtymä: kuinka paljon huomiota yksittäinen muutos sitten ansaitsee?
 -->
@@ -1481,7 +1554,7 @@ Mitoita ihmisen huomio <strong>muutoksen</strong> mukaan, ei sen mukaan, kuka se
 </style>
 
 <!--
-[29:15–30:30]
+[24:45–26:45]
 
 Viimeinen ajatus ennen yhteenvetoa: kuinka paljon ihmisen huomiota yksittäinen muutos ansaitsee?
 
@@ -1494,6 +1567,8 @@ Ei aina samaa määrää. Neljä kysymystä:
 Mitä enemmän oikealle, sitä enemmän ihmisen huomiota: tarkempi katselmointi, vaiheistettu käyttöönotto, canary-julkaisu, toinen katselmoija.
 
 Tämä vastaa myös PR-dian kysymykseen. Mergeäisitkö lukematta? Riippuu siitä, missä kohtaa näitä janoja muutos on.
+
+Ja sama vastaa alun rajaukseen: alennusesimerkki oli tarkoituksella pieni. Samat neljä kysymystä kertovat myös, kuinka paljon tarkistuksia kannattaa rakentaa ennen delegointia. Pieni, helposti peruttava muutos ei tarvitse kaikkea tätä. Maksuja koskeva muutos tarvitsee.
 -->
 
 ---
@@ -1520,14 +1595,14 @@ class: brand
 <img class="logo" src="/loihde-white.svg" alt="Loihde" />
 
 <!--
-[30:30–31:30, sitten kysymykset]
+[26:45–27:15, sitten kysymykset]
 
 Kolme askelta tiivistettynä:
 1. Määrittele järjestelmä, älä toteutusta: tyypit, ominaisuudet ja hyväksymiskriteerit kertovat, mitä järjestelmä lupaa.
-2. Eristä agentti tarkistuksesta: agentti kirjoittaa vain toteutusta, ja tarkistus ajetaan uudelleen tuoreessa kopiossa.
+2. Eristä agentti tarkistuksesta: agentti kirjoittaa vain toteutusta, ja tarkistus ajetaan uudelleen puhtaassa kopiossa.
 3. Päästä agentti irti: aitauksen sisällä agentti saa tehdä mitä haluaa.
 
-Jos aikaa jää, paluu tyyppiosion lauseeseen: "Älä pyydä agenttia muistamaan. Tee unohtamisesta virhe." Sama pätee kaikkiin kolmeen: jokainen sovittu laki, joka on kirjoitettu tarkistukseksi, on yksi asia vähemmän, jonka agentin pitää muistaa.
+Kiitos! Kysymyksiä?
 
-Ajoitus: tähän mennessä noin 31 min. Sitten kysymykset.
+(Jos aikaa jää: "Älä pyydä agenttia muistamaan. Tee unohtamisesta virhe." Jokainen tarkistukseksi kirjoitettu laki on yksi asia vähemmän, jonka agentin pitää muistaa.)
 -->

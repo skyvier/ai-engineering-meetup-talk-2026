@@ -4,6 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "slidev --open",
+    "slides": "scripts/open-deck.sh",
+    "present": "scripts/open-deck.sh presenter",
     "build": "slidev build",
     "export": "slidev export --output dist/ohjelmistokehitys-agenttien-aikakaudella.pdf",
     "export:notes": "slidev export-notes --output dist/puhujan-muistiinpanot.pdf"

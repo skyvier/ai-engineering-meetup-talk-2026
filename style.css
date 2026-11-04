@@ -83,6 +83,9 @@
 .slidev-layout pre { margin: 6px 0; }
 .code-sm { --slidev-code-font-size: 12px; --slidev-code-line-height: 17px; }
 .code-sm pre, .code-sm code { font-size: 12px !important; line-height: 17px !important; }
+/* Larger code for slides where the snippet is the point; readable from the back of the room */
+.code-md { --slidev-code-font-size: 14px; --slidev-code-line-height: 20px; }
+.code-md pre, .code-md pre code { font-size: 14px !important; line-height: 20px !important; }
 
 /* ---------- Building blocks ---------- */
 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }

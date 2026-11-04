@@ -17,7 +17,9 @@ Without Nix: requires Node.js 20+ (22 recommended), then `npm install`.
 
 ```sh
 npm install
-npm run dev            # presenter at http://localhost:3030, presenter view at /presenter
+npm run dev            # http://localhost:3030, presenter view at /presenter
+npm run present        # open presenter view (starts the dev server if needed)
+npm run slides         # open the audience view (starts the dev server if needed)
 npm run build          # static SPA into dist/
 npx playwright install chromium   # once, needed for export
 npm run export         # PDF of the slides  -> dist/ohjelmistokehitys-agenttien-aikakaudella.pdf
@@ -40,29 +42,31 @@ Diagrams are inline SVG inside `slides.md`, with no Vue components, so they're e
 
 ## Structure and timing (~30 min, then Q&A)
 
-The talk targets about 30 minutes; a little shorter or longer is fine. Each slide's speaker notes start with its planned time range.
+The talk targets about 30 minutes; a little shorter or longer is fine. Each slide's speaker notes start with its planned time range, based on a timed rehearsal (29 min before the last cuts).
 
 | # | Slide | Time |
 |---|---|---|
-| 1 | Kansi | 0:00–0:45 |
-| 2 | Agentti työskentelee silmukassa | –1:30 |
-| 3 | Mistä tiedämme, että agentti on valmis? | –3:15 |
-| 4 | Kuinka tiukka "valmis"? | –4:45 |
-| 5 | Deterministisiä tarkistuksia on monenlaisia | –6:00 |
-| 6–7 | Tyypit: todiste, sopimus koodin sisällä | –8:30 |
-| 8–10 | Ominaisuustestit: esimerkki vai laki, vastaesimerkin etsintä, koodi | –12:30 |
-| 11–12 | Hyväksymistestit: tiketti, Gherkin | –14:15 |
-| 13 | Vakaa rajapinta ensin | –15:30 |
-| 14 | Rajataan hyväksyttävien ohjelmien joukkoa | –16:30 |
-| 15–18 | Mistä tarkistukset tulevat? (yleiskuva, kriteerit, ominaisuudet, tyypit) | –21:30 |
-| 19 | Määrittele järjestelmä, älä toteutusta | –21:45 |
-| 20–22 | Eristä agentti tarkistuksesta: työtila, ohje, riippumaton tarkistus | –26:00 |
-| 23 | Missä ihmisen työ on? (piirros) | –27:00 |
-| 24 | Päästä agentti irti | –27:15 |
-| 25 | Agentin PR: mergeäisitkö lukematta diffiä? | –28:15 |
-| 26 | Mitä vihreä tulos ei kerro? | –29:15 |
-| 27 | Kuinka paljon huomiota muutos ansaitsee? | –30:30 |
-| 28 | Kolme askelta (lopetus) | –31:30 |
+| 1 | Kansi | 0:00–0:30 |
+| 2 | Agentti työskentelee silmukassa | –1:15 |
+| 3 | Mistä tiedämme, että agentti on valmis? | –3:25 |
+| 4 | Kuinka tiukka "valmis"? | –4:25 |
+| 5 | Deterministisiä tarkistuksia on monenlaisia | –5:25 |
+| 6 | Rajataan hyväksyttävien ohjelmien joukkoa (esikatselu) | –6:10 |
+| 7 | Esimerkki: alennus verkkokaupan kassalla (tarkoituksella yksinkertainen) | –7:10 |
+| 8–9 | Tyypit: todiste, sopimus koodin sisällä | –9:10 |
+| 10–11 | Ominaisuustestit: esimerkki vai laki, laki koodina ja vastaesimerkki | –11:40 |
+| 12–13 | Hyväksymistestit: tiketti, Gherkin | –13:15 |
+| 14 | Mikä jää leikkauksen ulkopuolelle? (paluu joukkokuvaan) | –14:15 |
+| 15 | Vakaa rajapinta ensin | –15:00 |
+| 16–19 | Mistä tarkistukset tulevat? (yleiskuva, kriteerit, ominaisuudet, tyypit) | –19:00 |
+| 20 | Määrittele järjestelmä, älä toteutusta | –19:15 |
+| 21–22 | Eristä agentti tarkistuksesta: työtila, ohje ja uudelleenajo puhtaassa kopiossa | –21:55 |
+| 23 | Missä ihmisen työ on? (piirros) | –22:40 |
+| 24 | Päästä agentti irti | –22:50 |
+| 25 | Agentin PR: mergeäisitkö lukematta diffiä? | –23:35 |
+| 26 | Mitä vihreä tulos ei kerro? | –24:45 |
+| 27 | Kuinka paljon huomiota muutos ansaitsee? | –26:45 |
+| 28 | Kolme askelta (lopetus) | –27:15 |
 
 All code examples use an invented web-shop discount example and are labelled on the slides (simplified example or illustration). The agent workflow slides show the demo repository's structure with discount-example file names, and its permission profile and prompt (reformatted, shortened and translated).
 
