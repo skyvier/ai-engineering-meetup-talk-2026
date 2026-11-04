@@ -49,7 +49,7 @@ The talk targets about 30 minutes; a little shorter or longer is fine. Each slid
 | 1 | Kansi | 0:00–0:30 |
 | 2 | Agentti työskentelee silmukassa | –1:15 |
 | 3 | Mistä tiedämme, että agentti on valmis? | –3:25 |
-| 4 | Kuinka tiukka "valmis"? | –4:25 |
+| 4 | Rajataan ratkaisua jättäen agentille liikkumavaraa | –4:25 |
 | 5 | Deterministisiä tarkistuksia on monenlaisia | –5:25 |
 | 6 | Rajataan hyväksyttävien ohjelmien joukkoa (esikatselu) | –6:10 |
 | 7 | Esimerkki: alennus verkkokaupan kassalla (tarkoituksella yksinkertainen) | –7:10 |
@@ -60,13 +60,13 @@ The talk targets about 30 minutes; a little shorter or longer is fine. Each slid
 | 15 | Vakaa rajapinta ensin | –15:00 |
 | 16–19 | Mistä tarkistukset tulevat? (yleiskuva, kriteerit, ominaisuudet, tyypit) | –19:00 |
 | 20 | Määrittele järjestelmä, älä toteutusta | –19:15 |
-| 21–22 | Eristä agentti tarkistuksesta: työtila, ohje ja uudelleenajo puhtaassa kopiossa | –21:55 |
-| 23 | Missä ihmisen työ on? (piirros) | –22:40 |
-| 24 | Päästä agentti irti | –22:50 |
-| 25 | Agentin PR: mergeäisitkö lukematta diffiä? | –23:35 |
-| 26 | Mitä vihreä tulos ei kerro? | –24:45 |
-| 27 | Kuinka paljon huomiota muutos ansaitsee? | –26:45 |
-| 28 | Kolme askelta (lopetus) | –27:15 |
+| 21–23 | Eristä agentti tarkistuksesta: työtila, ohje, mitä asetelma ratkaisee | –22:00 |
+| 24 | Missä ihmisen työ on? (piirros) | –22:45 |
+| 25 | Päästä agentti irti | –22:55 |
+| 26 | Agentin PR: mergeäisitkö lukematta diffiä? | –23:40 |
+| 27 | Mitä vihreä tulos ei kerro? | –24:50 |
+| 28 | Kuinka paljon huomiota muutos ansaitsee? | –26:50 |
+| 29 | Kolme askelta (lopetus) | –27:20 |
 
 All code examples use an invented web-shop discount example and are labelled on the slides (simplified example or illustration). The agent workflow slides show the demo repository's structure with discount-example file names, and its permission profile and prompt (reformatted, shortened and translated).
 

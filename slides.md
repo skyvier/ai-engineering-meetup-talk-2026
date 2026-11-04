@@ -37,13 +37,13 @@ layout: cover
 <!--
 [0:00–0:30]
 
-Tervetuloa. Kaikki täällä ovat käyttäneet koodausagentteja, joten en esittele niitä.
+Terve kaikille, olen Joonas Laukka. Puhun tänään siitä, miten ohjelmistokehitystä kannattaa tehdä autonomisten agenttien aikakaudella.
 
-Kysymys tänään: miten agentille voi antaa enemmän vapautta niin, että kontrolli säilyy? Vastaukseni ei ole "älä anna". Vastaus on: päätä ensin, millä hyväksyt tuloksen, ja anna vapaus sen rajan sisällä.
+Kysymys on: miten annamme tekoälylle enemmän autonomiaa menettämättä kontrollia, niin että voimme edelleen luottaa sen tuotokseen?
 
-Tänään kolme askelta: määrittele järjestelmä, eristä agentti tarkistuksesta ja päästä se irti. Järjestelmä määritellään kolmella deterministisellä tarkistuksella: tyypeillä, ominaisuustesteillä (property testing) ja hyväksymistesteillä (Gherkin). Esimerkkinä on verkkokaupan alennus.
+Vastaukseni on kolme askelta: määrittele järjestelmä, eristä agentti tarkistuksesta ja päästä se irti.
 
-Tärkeä rajaus heti alkuun: emme aja agenttia livenä. Esimerkit ovat yksinkertaistettuja, ja agentin työnkulku näytetään asetuksina ja kehotteena.
+Emme aja agenttia livenä. Näytän mekanismin yksinkertaisella esimerkillä. *Aloitetaan siitä, miten agentti oikein toimii.*
 -->
 
 ---
@@ -91,13 +91,18 @@ Tärkeä rajaus heti alkuun: emme aja agenttia livenä. Esimerkit ovat yksinkert
 <!--
 [0:30–1:15]
 
-Kaikki tuntevat tämän, joten lyhyesti. Agentti saa tehtävän, muokkaa koodia, ajaa työkalut, lukee palautteen ja jatkaa, kunnes se päättää itse, että työ on valmis.
+Tämä on varmaan kaikille tuttua, mutta päästään samaan ajatukseen aluksi.
 
-Kaksi kohtaa kuvasta:
-- Palaute: agentti on vain niin hyvä kuin palaute, jonka sen työkalut antavat. Tähän esitys palaa tarkistusten kautta.
-- Lopetus: silmukasta poistutaan agentin oman arvion perusteella.
+1. Agentille annetaan tehtävä.
+2. Se muokkaa koodia.
+3. Se ajaa työkaluja kuten kääntäjää ja testejä.
+4. Se lukee palautteen ja päättää, onko se valmis vai jatketaanko.
 
-Siirtymä: entä se "valmis"? Mistä tiedämme, että agentti on oikeasti valmis?
+Kaksi asiaa tästä kuvasta:
+1. Agentti on vain niin hyvä kuin palaute, jonka se saa.
+2. Silmukasta poistutaan agentin oman arvion perusteella.
+
+*Mistä me tiedämme, että se on oikeasti valmis?*
 -->
 
 ---
@@ -134,21 +139,20 @@ Siirtymä: entä se "valmis"? Mistä tiedämme, että agentti on oikeasti valmis
 <!--
 [1:15–3:25]
 
-Terminaali on keksitty havainnollistus, ei oikean ajon tuloste. Sanon tämän ääneen.
+Vasemmalla keksitty esimerkki tilanteesta, johon moni on törmännyt. Agentti kertoo toteuttaneensa alennuslogiikan ja lisänneensä testit, kaikki menevät läpi, ja se on valmis. *Mikä tässä voi mennä pieleen?*
 
-Pointti: agentin raportti on hyödyllistä tietoa mutta ei hyväksymiskriteeri. Kolme ongelmaa oikealla:
-- Sama väärinkäsitys kahdesti: jos agentti ymmärsi tehtävän väärin, se kirjoittaa saman väärinkäsityksen sekä koodiin että testeihin. Testit vahvistavat väärinkäsityksen sen sijaan, että paljastaisivat sen.
-- Testejä voi muuttaa: kun tarkistus ja tarkistettava ovat saman kirjoittajan käsissä, helpoin tie vihreään voi olla tarkistuksen heikentäminen.
-- Erehtyy omasta valmiudestaan: agentti voi jättää testin ajamatta, selittää epäonnistuneen testin epävakaaksi tai asiaan kuulumattomaksi, tai lopettaa "riittävän hyvään". Raportti näyttää silti samalta: "Valmis! ✅". Syy on se, että "valmis" on mallin arvio eikä toistettava tarkistus.
+1. Sama väärinkäsitys kahdesti: jos agentti ymmärsi tehtävän väärin, **sama virhe on sekä toteutuksessa että testeissä**, eikä kukaan huomaa sitä.
+2. Testejä voi muuttaa: **agentti voi päätellä, että testi on virheellinen, ja säätää sitä, kunnes se menee läpi**.
+3. Agentti voi erehtyä omasta valmiudestaan: **se selittää virheen asiaan kuulumattomaksi tai ratkaisun riittävän hyväksi**.
 
-Kysy yleisöltä: "Kuinka monella on käynyt niin, että Claude tai Codex on sanonut työn olevan valmis, vaikka sitä ei ollut edes yritetty?" Odota käsiä hetki.
+Kysy yleisöltä: **"Kuinka monella on käynyt niin, että Claude tai Codex on sanonut työn olevan valmis, vaikka sitä ei ollut edes yritetty?"** Odota käsiä hetki.
 
-Siirtymä: mitä "valmis" oikeastaan tarkoittaa?
+Pohjimmainen syy on sama: "valmis" on mallin oma arvio, väite eikä tarkistus. *Miten valmis määritellään oikein?*
 -->
 
 ---
 
-# Kuinka tiukka "valmis"?
+# Rajataan ratkaisua jättäen agentille liikkumavaraa
 
 <svg class="diagram" viewBox="0 0 876 270" style="margin-top: 20px" role="img" aria-label="Janan vasemmassa päässä liian löysä valmis, jossa agentin oma arvio riittää. Oikeassa päässä liian tiukka valmis, jossa testit lukitsevat toteutuksen. Keskellä tavoite: järjestelmä toimii odotetusti ja agentti saa päättää, miten.">
   <!-- sweet spot frame -->
@@ -189,13 +193,14 @@ Tavoite: <strong>tarpeeksi tiukka</strong>, että järjestelmä toimii odotetust
 <!--
 [3:25–4:25]
 
-Edellisellä dialla "valmis" oli agentin oma arvio. Se on janan vasen pää: liian löysä. Agentti voi olla valmis mistä tahansa.
+Rajataan ratkaisua jättäen agentille liikkumavaraa.
 
-Ilmeinen vastaus on kiristää: lisää testejä. Mutta jos testit tuntevat toteutuksen, eli mockit, sisäisen rakenteen ja tarkat tulosteet, ollaan oikeassa päässä. Jokainen muutos rikkoo testit, ja agentilla ei ole enää liikkumavaraa. Silloin sen voisi yhtä hyvin kirjoittaa itse.
+Janalla on kolme kohtaa:
+1. Liian löysä: **"valmis" on agentin oma arvio**, kuten edellisellä dialla. Agentti voi olla valmis mistä tahansa.
+2. Liian tiukka: lisätään testejä, jotka **tuntevat toteutuksen**. Silloin agentilla ei ole liikkumavaraa, ja **teemme itse sen työn, jonka halusimme delegoida**.
+3. Tavoite on keskellä: **järjestelmän ominaisuudet on määritelty, mutta toteutukseen ei oteta kantaa**. Agentti saa päättää, miten.
 
-Tavoite on keskellä: "valmis" määritellään järjestelmän ehdoilla. Tarpeeksi tiukka, että järjestelmä toimii odotetusti, ja tarpeeksi löysä, että agentti saa päättää, miten.
-
-Siirtymä: millä tarkistuksilla tällainen "valmis" kirjoitetaan?
+*Miten tämmönen tapahtuu käytännössä?*
 -->
 
 ---
@@ -233,19 +238,16 @@ Siirtymä: millä tarkistuksilla tällainen "valmis" kirjoitetaan?
 <!--
 [4:25–5:25]
 
-Tahti: kevyt. Nimeä kolme, älä selitä niitä vielä.
+Käytännössä deterministisillä tarkistuksilla. Niitä on paljon, ja kaikilla on paikkansa. Tänään keskityn kolmeen:
+1. **Tyypit**: mitä voi olla olemassa.
+2. **Ominaisuustestit**: mikä pätee aina.
+3. **Hyväksymistestit**: mitä pitää tapahtua.
 
-Deterministisiä tarkistuksia on paljon, ja kaikilla on paikkansa. Tänään keskityn kolmeen: tyyppeihin, ominaisuustesteihin ja hyväksymistesteihin.
+Miksi juuri nämä? **Ne kuvaavat järjestelmää eivätkä koodia**, joten ne pysyvät totena, vaikka toteutus vaihtuu, ja ihminen voi päättää ne ennen delegointia.
 
-Miksi juuri nämä? Ne kuvaavat järjestelmää eivätkä koodia: mitä voi olla olemassa, mikä pätee aina ja mitä pitää tapahtua. Siksi ne pysyvät totena, vaikka toteutus vaihtuu, ja ihminen voi päättää ne ennen delegointia.
+Itse olen suuri tyyppijärjestelmien ystävä, ja agenttiaikana ne ovat entistä tärkeämpiä. **Tyypit lyövät rajapinnan lukkoon**, ja siksi kaksi muuta voi kirjoittaa ennen toteutusta.
 
-Itse olen suuri tyyppijärjestelmien ystävä, ja agenttiaikana ne ovat entistä tärkeämpiä. Tyypit lyövät rajapinnan lukkoon, ja juuri siksi kaksi muuta voi kirjoittaa ennen toteutusta.
-
-Käydään kukin läpi omana osionaan.
-
-(Jos joku kysyy himmennetyistä: ne testaavat useimmiten juuri tätä toteutusta tai ajetaan agentin silmukan ulkopuolella. Ne ovat hyviä, mutta eivät kuvaa järjestelmän käytöstä samalla tavalla.)
-
-Siirtymä: miten nämä kolme yhdessä rajaavat, mikä on valmis?
+*Miten nämä kolme yhdessä rajaavat agentin ratkaisua?*
 -->
 
 ---
@@ -293,17 +295,18 @@ Siirtymä: miten nämä kolme yhdessä rajaavat, mikä on valmis?
 <!--
 [5:25–6:10]
 
-Pointti: ilman rajauksia agentti voi generoida mitä tahansa ohjelmaa. Todennäköisesti se osuu lähelle, mutta deterministiset tarkistukset varmistavat, että hyväksyttävien ohjelmien joukko on rajattu siihen, mitä haluamme.
+**Eiköhän lyödä Venn-diagrammia pöytään.**
 
-Jokainen tarkistus rajaa joukkoa. Hyväksytään vain leikkaus, ja sen sisällä on yhä monta toteutusta: se on agentin vapaus.
+Ilman rajauksia agentti voi generoida **mitä tahansa ohjelmaa**. Todennäköisesti se osuu lähelle, mutta deterministiset tarkistukset varmistavat, että hyväksytyt ohjelmat ovat sitä, mitä haluamme.
 
-Ihminen vastaa siitä, osuvatko rajat siihen, mitä oikeasti tarkoitimme.
+Jokainen tarkistus rajaa joukkoa:
+1. **Tyypit**: ohjelma kääntyy.
+2. **Ominaisuudet**: lait pätevät.
+3. **Hyväksymiskriteerit**: skenaariot menevät läpi.
 
-Palaamme tähän kuvaan, kun kaikki kolme on nähty.
+Hyväksytään vain **leikkaus**. Sen sisällä on yhä monta toteutusta, ja se on agentin vapaus. Ihminen vastaa siitä, **osuvatko rajat siihen, mitä oikeasti tarkoitimme**.
 
-(Jos joku kysyy: tämä on hyväksymisen malli, ei väite siitä, että kielimallin generointia rajattaisiin muodollisesti. Agentti voi kirjoittaa mitä tahansa; me päätämme, mitä otamme vastaan.)
-
-Siirtymä: ensin esimerkki, johon loppuesitys nojaa.
+Palaamme tähän kuvaan, kun kaikki kolme on nähty. *Ensin kuitenkin esimerkki, johon loppuesitys nojaa.*
 -->
 
 ---
@@ -355,17 +358,22 @@ Esimerkki on <strong>tarkoituksella äärimmäisen yksinkertainen</strong>. Se n
 <!--
 [6:10–7:10]
 
-Tahti: rauhallisesti. Kaikki myöhempi nojaa tähän.
+Esimerkki, johon loppuesitys nojaa. **Se on tarkoituksella todella yksinkertainen.**
 
-Ennen tarkistuksia: esimerkki, johon loppuesitys nojaa.
+Verkkokaupan ostoskoriin voi syöttää alennuskoodin:
+1. **AUTUMN20** on voimassa: sadan euron korista maksetaan 80 euroa.
+2. **SUMMER10** on vanhentunut: se hylätään, eikä summa muutu.
 
-Verkkokaupan kassa. Asiakas syöttää kampanjakoodin. AUTUMN20 antaa 20 prosentin alennuksen: sadan euron korista maksetaan 80 euroa. Vanhentunut SUMMER10 hylätään, eikä summa muutu.
+Koodissa tämä on:
+- **Money** on rahaa sentteinä.
+- **Percent** on prosenttiluku nollasta sataan.
+- Yksi funktio: **applyDiscount**, joka laskee alennetun hinnan.
 
-Koodissa tämä on kaksi tyyppiä, Money sentteinä ja Percent nollasta sataan, ja yksi funktio, applyDiscount. Samat nimet palaavat jokaisella seuraavalla dialla.
+Samat nimet palaavat seuraavilla dioilla.
 
-Sano ääneen: esimerkki on tarkoituksella äärimmäisen yksinkertainen. Jokaisen tarkistuksen idea mahtuu yhdelle dialle, eikä kenenkään tarvitse opetella uutta domainia. Oikeassa järjestelmässä tarkistuksia rakennetaan sen mukaan, kuinka riskialtis muutos on. Palaan siihen lopussa.
+Haluan vielä toistaa: **tämä on tarkoituksella yksinkertainen esimerkki**, jotta mekanismi näkyy. Oikeassa työssä kaikki on monimutkaisempaa, ja tarkistuksia rakennetaan sen mukaan, kuinka riskialtis muutos on. Samoja periaatteita voi silti soveltaa. Palaan riskiin lopussa.
 
-Siirtymä: ensimmäinen tarkistus, tyypit.
+*Lähdetään liikkeelle tyypeistä.*
 -->
 
 ---
@@ -420,13 +428,15 @@ Tarkistus tehdään <strong>kerran rajalla</strong>. Tyyppi kantaa todisteen ete
 <!--
 [7:10–7:55]
 
-Tahti: kevyt.
+Tämä on monelle tuttua, mutta mitä tyypit oikeastaan tekevät? **Tyyppi voi kantaa todisteen.**
 
-Ajatus ennen koodia: tyyppi voi kantaa todisteen.
+1. Raaka luku tulee ulkomaailmasta, esimerkiksi API:sta tai agentin kirjoittamasta koodista.
+2. **percent()** tarkistaa kerran rajalla, onko luku nollan ja sadan välissä.
+3. Vain ehdot täyttävä arvo pääsee läpi ja muuttuu **Percent**-arvoksi.
 
-Raaka luku tulee ulkomaailmasta. percent() tarkistaa sen kerran rajalla. Läpi päässyt arvo on Percent, eikä kenenkään tarvitse tarkistaa sitä uudelleen. Agentti ei ohita rajaa vahingossa.
+Sen jälkeen **tyyppi on todiste siitä, että validointi on tehty**, eikä kenenkään tarvitse tarkistaa sitä uudelleen. Agentti ei ohita rajaa vahingossa.
 
-(Jos joku kysyy: ajatus tunnetaan nimellä "Parse, don't validate", Alexis King 2019.)
+*Miltä tämä näyttää koodissa?*
 -->
 
 ---
@@ -482,19 +492,19 @@ applyDiscount(price, 20);
 <!--
 [7:55–9:10]
 
-Tahti: kevyt. Yksi lause per korostus.
+Sama TypeScriptinä. Koodi etenee osa kerrallaan.
 
-Domain-tyypit: Money ja Percent ovat lukuja, mutta kääntäjä erottaa ne. Ne kertovat, mitä luku tarkoittaa.
+1. **Domain-tyypit**: Money ja Percent ovat brändättyjä lukuja. Ajon aikana ne ovat pelkkiä lukuja, mutta kääntäjä erottaa ne.
 
-[click] Konstruktori: Percentin saa vain tästä, ja se tarkistaa rajat.
+[click] 2. **Konstruktori** on ainoa tapa luoda Percent-arvo. Jos luku on väärä, ulos tulee null. Yksi tie sisään.
 
-[click] Sopimus: kun allekirjoitus on kiinni, testit voi kirjoittaa ennen toteutusta.
+[click] 3. **Sopimus**: applyDiscount ottaa validoidun hinnan ja validoidun prosentin ja palauttaa rahaa. Tätä vasten voi kirjoittaa loput testit ennen toteutusta.
 
-[click] Virhe: pelkkä 20 ei käänny. Agentin ei tarvitse muistaa validoida.
+[click] 4. **Virhe**: jos agentti unohtaa validoinnin, kääntäjä kertoo siitä.
 
-[click] Älä pyydä agenttia muistamaan. Tee unohtamisesta virhe.
+[click] **Älä pyydä agenttia muistamaan. Tee unohtamisesta virhe.**
 
-(Jos joku kysyy: as ja any ohittavat tämän, mutta vain tahallaan, ja ne voi kieltää lint-säännöllä. Tyyppi ei myöskään todista, että validointi on oikein; se tulee testeistä.)
+*Entä ominaisuustestit?*
 -->
 
 ---
@@ -534,17 +544,19 @@ Esimerkki näyttää <strong>yhden tapauksen</strong>. Laki sanoo, mikä pätee 
 <!--
 [9:10–10:30]
 
-Tahti: kevyt. Yksi lause per rivi; lakien nimet ovat bonusta.
+**Kuinka monelle ominaisuustestit eli property testit on ennestään tuttuja?**
 
-Moni ei ole kuullut ominaisuustestauksesta, joten lähdetään matematiikasta. Vasemmalla yksi tapaus, oikealla sama kaikille tapauksille. Vaihdannaisuus: järjestyksellä ei ole väliä.
+Lähdetään liikkeelle matematiikasta.
 
-[click] Idempotenssi: kahdesti on sama kuin kerran.
+Tavallinen testi tarkistaa yhden tapauksen: 2 + 3 = 3 + 2. Ominaisuustesti sanoo saman kaikille luvuille. Tämän lain nimi on **vaihdannaisuus eli kommutatiivisuus**: järjestyksellä ei ole väliä. *Onko muita tällaisia lakeja?*
 
-[click] Omaan järjestelmään: nolla prosenttia ei koskaan muuta hintaa. Neutraalialkio.
+[click] Lajittelu kahdesti on sama kuin kerran. Tämä on **idempotenssi**: operaation toistaminen ei muuta tulosta. *Entä meidän kassamme?*
 
-[click] Tämä on käytännössä tärkein: ominaisuustestit löytävät reunatapauksia, joita agentti tai kehittäjä ei tullut ajatelleeksi. Seuraavalla dialla nähdään yksi.
+[click] Kassallakin on lakeja: nollan prosentin alennus ei koskaan muuta hintaa. Tämä on **neutraalialkio**, sama ajatus kuin a + 0 = a. *Miksi kirjoittaa laki, kun esimerkkikin riittäisi?*
 
-[click] Esimerkki näyttää yhden tapauksen. Laki sanoo, mikä pätee kaikille.
+[click] Koska ominaisuustesti kokeilee lakia **satunnaisesti generoiduilla arvoilla**. Siksi se löytää helpommin **reunatapauksia, joita kukaan ei tule kirjoittaneeksi testiin**. Juuri niissä bugit asuvat.
+
+[click] Esimerkki näyttää yhden tapauksen, laki pätee kaikille. *Katsotaan tuota nollan prosentin lakia koodina.*
 -->
 
 ---
@@ -611,19 +623,11 @@ Vastaesimerkki on agentille <strong>tarkkaa palautetta</strong>: mikä laki, mil
 <!--
 [10:30–11:40]
 
-Tahti: koodi kevyesti, vastaesimerkkiin pysähdy.
+Testin nimi on laki: **kaikilla hinnoilla nollan prosentin alennus palauttaa saman hinnan**. *Miltä näyttää toteutus, joka rikkoo tämän?*
 
-Sama laki kuin edellisellä dialla, nyt koodina: nollan prosentin alennus ei koskaan muuta hintaa. Nimi on laki, generaattori tuottaa satoja hintoja, ja itse laki on yksi rivi.
+[click] Tämä näyttää järkevältä. **Huomaatteko bugin?** (tauko) Nolla on JavaScriptissä epätosi, joten nolla prosenttia vaihtuu kymmenen prosentin oletusalennukseksi.
 
-[click] Virheellinen toteutus. Bugi on toisella rivillä: d || DEFAULT_PERCENT. JavaScriptissä nolla on epätosi, joten nollan prosentin alennus korvautuu kymmenen prosentin oletusalennuksella. Klassinen reunatapaus, joka näyttää koodikatselmoinnissa harmittomalta.
-
-[click] Pysähdy tähän. Sano ääneen: tuloste on keksitty havainnollistus.
-
-Testi löysi lakia rikkovan hinnan ja yksinkertaisti sen: yhden sentin hinnasta tuli nolla, koska 10 % yhdestä sentistä pyöristyy alas.
-
-Agentille tämä on täsmällistä palautetta: mikä laki, millä syötteellä, mikä tulos. Ei "jokin meni pieleen", vaan vastaesimerkki, jonka voi korjata.
-
-Yksi laki ei kuitenkaan riitä: toteutus, joka ei alenna lainkaan, täyttää tämän. Palataan siihen kohta.
+[click] **Tämä on keksitty tuloste.** Testi löysi bugin: yhden sentin hinnasta tuli nolla. Juuri tällaista palautetta agentti saa: **mikä laki, millä syötteellä, mikä tulos**. *Riittääkö yksi laki? Ei, ja siksi tarvitaan vielä hyväksymistestit.*
 -->
 
 ---
@@ -662,15 +666,15 @@ Kriteerit ovat jo olemassa. Hyväksymistesti tekee niistä <strong>ajettavia</st
 <!--
 [11:40–12:20]
 
-Hyväksymistestit kuulostavat raskailta, mutta useimmilla on ne jo, vain eri muodossa: tiketin hyväksymiskriteereinä.
+Hyväksymistestit kuulostavat raskailta, mutta hyvässä ohjelmistokulttuurissa **ne ovat jo olemassa: tiketin hyväksymiskriteereinä**.
 
-Tässä tyypillinen user story kampanjakoodista ja kaksi kriteeriä. Voimassa oleva koodi alentaa summaa, ja vanhentunut koodi hylätään.
+Tässä keksitty esimerkkitiketti: user story kampanjakoodista asiakkaan näkökulmasta ja kaksi kriteeriä:
+1. Voimassa oleva koodi alentaa summaa.
+2. Vanhentunut koodi hylätään.
 
-Ongelma: tiketti ei aja itseään. Agentti lukee sen, tulkitsee sen ja sanoo "valmis". Kukaan ei tarkista, vastaako tulkinta kriteerejä.
+Ongelma: **tiketti ei testaa itseään**. Agentti lukee sen, tulkitsee sen ja sanoo olevansa valmis, eikä kukaan tarkista, vastaako tulkinta kriteerejä.
 
-Hyväksymistesti on sama asia ajettavana. Seuraavalla dialla nämä kaksi kriteeriä ovat kaksi skenaariota.
-
-(Tiketti on keksitty esimerkki, ei mistään oikeasta järjestelmästä.)
+*Miltä nämä kriteerit näyttävät ajettavina?*
 -->
 
 ---
@@ -719,15 +723,15 @@ Hyväksymistesti kertoo, milloin työ on valmis <strong>sen mielestä, joka sit�
 <!--
 [12:20–13:15]
 
-Tahti: hyvin kevyt.
+Tiketin kaksi kriteeriä **ajettavina testeinä**. Tässä on käytetty Gherkiniä, jolla kriteerit kirjoitetaan tarpeen kielellä. Tämä on BDD:n ydin: **käytös sovitaan esimerkkeinä tarpeen omistajan kanssa ennen toteutusta**, ja esimerkeistä tulee ajettavia testejä.
 
-Tiketin kaksi kriteeriä ajettavina testeinä. Tämä on BDD:n ydin: käytös sovitaan esimerkkeinä tarpeen omistajan kanssa ennen toteutusta, ja esimerkeistä tulee ajettavia testejä. Gherkin on vain kirjoitustapa.
+1. **Tuoteomistaja voi tarkistaa** skenaariot ennen kuin koodia on.
+2. **Agentti voi ajaa ne** ja tarkistaa itse, onko tavoitteeseen päästy. Se ei kirjoita omaa tavoitettaan, mikä pienentää riskiä mutta ei poista sitä: hyväksytty skenaariokin voi olla väärä.
+3. **Skenaario on esimerkki, ei laki**: se tarkistaa vain nämä luvut. Siksi esimerkit ja lait täydentävät toisiaan.
 
-Agentille: tavoite sovitaan etukäteen, joten agentti ei kirjoita omaa tavoitettaan. Se pienentää riskiä mutta ei poista sitä: hyväksytty skenaariokin voi olla väärä.
+Hyväksymistesti kertoo, milloin työ on valmis **sen mielestä, joka työn tilasi**.
 
-Ja skenaario on esimerkki, ei laki: se tarkistaa vain nämä luvut.
-
-(Jos joku kysyy, miksi hyväksymiskriteerejä ei kirjoiteta yleisinä lakeina: osittain voi ja kannattaa. Kun kriteerissä lukee "aina" tai "ei koskaan", siitä kannattaa tehdä myös ominaisuustesti. Esimerkkejä tarvitaan silti, koska tuoteomistaja pystyy hyväksymään "100 € + AUTUMN20 → 80 €", mutta tuskin kaavaa. Lisäksi laki harvoin lyö lukkoon tarkkaa arvoa: alentamaton toteutus täyttää lait, ja täysin tarkka laki olisi toinen toteutus. Ja konkreettinen luku pakottaa päätökset esiin, kuten pyöristyksen. Tiivistettynä: esimerkki kertoo, mitä sovittiin, laki kertoo, mikä pätee aina. Tarvitaan molemmat.)
+*Mitä nämä kolme yhdessä sulkevat pois?*
 -->
 
 ---
@@ -790,21 +794,17 @@ Yksikään tarkistus ei riitä yksin. Hyväksytään vain <strong>leikkaus</stro
 <!--
 [13:15–14:15]
 
-Tahti: pysähdy. Tämä on kohta, jossa kolme tarkistusta loksahtavat yhteen.
+**Sama kuva kuin aiemmin, nyt vähän konkreettisemmin.** Jokainen tarkistus sulkee pois erilaisen väärän ohjelman.
 
-Sama kuva, nyt kun kaikki kolme on nähty. Jokainen tarkistus sulkee pois erilaisen väärän ohjelman.
+[click] 1. **Väärä arvo**, kuten 120 prosentin alennus, ei edes käänny. Tyypit hoitavat sen ennen yhtäkään testiä.
 
-[click] Ohjelma, joka yrittää käyttää väärää arvoa, kuten 120 prosentin alennusta, ei edes käänny. Tyypit hoitavat sen ennen yhtäkään testiä.
+[click] 2. Ohjelma, joka kääntyy ja läpäisee skenaariot, mutta **jossa nollan prosentin alennus muuttaa hintaa**, rikkoo lain. Sen löytää vain ominaisuustesti. Tämä on edellisten diojen bugi.
 
-[click] Ohjelma, joka kääntyy ja läpäisee skenaariot, mutta jossa nollan prosentin alennus muuttaa hintaa, rikkoo lain. Sen löytää vain ominaisuustesti.
+[click] 3. Ohjelma, joka täyttää lait, mutta **ei alenna hintaa lainkaan**, ei täytä tarvetta. Sen löytää vain hyväksymistesti.
 
-[click] Ohjelma, joka kääntyy ja täyttää lait, mutta ei alenna hintaa lainkaan, ei täytä tarvetta. Sen löytää vain hyväksymistesti.
+**Yksikään tarkistus ei riitä yksin.** Hyväksytään vain leikkaus, ja sen sisällä agentti saa valita vapaasti.
 
-Yksikään tarkistus ei riitä yksin. Hyväksytään vain leikkaus, ja sen sisällä agentti saa valita vapaasti.
-
-(Jos joku kysyy tarkemmin: 1. applyDiscount(price, 120) ei käänny, koska raaka luku ei ole Percent. 2. discount || DEFAULT_PERCENT kohtelee nollaa puuttuvana alennuksena: kääntyy ja 20 prosentin skenaario menee läpi, mutta 0 % muuttaa hintaa. 3. return price täyttää lait mutta antaa 100 eurosta 100 euroa, ei 80. Kääntäen: aina 80 € antava toteutus läpäisee skenaarion mutta rikkoo lain 50 euron korilla.)
-
-Siirtymä: miksi tyypit ensin?
+*Miksi tyypit kannattaa määritellä ensin?*
 -->
 
 ---
@@ -876,17 +876,14 @@ Tyypit antavat testeille <strong>vakaan rajapinnan</strong>, joten testit voi ki
 <!--
 [14:15–15:00]
 
-Yhteenveto kolmesta. Ne eivät ole rinnakkaisia vaihtoehtoja, vaan ne rakentuvat toistensa päälle.
+Tyypit määrittelevät **rajapinnan, jota vasten ominaisuus- ja hyväksymistestit kirjoitetaan**. Siksi järjestys on:
+1. **Tyypit ensin**: mitä arvoja on olemassa ja mitä funktioita voi kutsua.
+2. **Testit sopimusta vasten**, ennen kuin toteutusta on olemassa.
+3. **Vasta sitten agentti toteuttaa.** Se saa muuttaa toteutusta niin monta kertaa kuin tarvitsee, koskematta kriteereihin tai rajapintaan.
 
-1. Tyypit ensin. Ne määrittelevät rajapinnan: mitä arvoja on olemassa ja mitä funktioita voi kutsua. Agentti ei saa muuttaa niitä.
-2. Testit sopimusta vastaan. Ominaisuus- ja hyväksymistestit kirjoitetaan tyyppejä vastaan, ennen kuin toteutusta on olemassa. Tämä on käytännön havainto: kun tyypit ovat kiinni, testit voi kirjoittaa etukäteen, eivätkä ne riko, kun toteutus muuttuu.
-3. Vasta sitten agentti toteuttaa. Toteutus saa vaihtua sopimuksen takana niin monta kertaa kuin tarvitaan.
+Jos tarkistus kirjoitettaisiin suoraan toteutusta vasten, **se rikkoutuisi heti, kun agentti muuttaa toteutusta**.
 
-Jos tarkistus kirjoitettaisiin suoraan toteutusta vastaan, se rikkoutuisi heti, kun agentti muuttaa toteutusta.
-
-Nyt joukkokuvan kolmella ympyrällä on sisältö, ja tyypit ovat se, jota vastaan kaksi muuta kirjoitetaan.
-
-Siirtymä: mistä nämä tarkistukset käytännössä tulevat?
+*Mistä nämä tarkistukset sitten käytännössä tulevat?*
 -->
 
 ---
@@ -942,15 +939,14 @@ Kaikki kolme päätetään <strong>ennen</strong> kuin agentti aloittaa toteutuk
 <!--
 [15:00–16:10]
 
-Tähän asti katsoimme, mitä tarkistukset ovat. Nyt: kuka ne kirjoittaa ja mistä ne löytyvät. Eri lähteistä, eri ihmisiltä, ja ylhäältä alas: epämääräisestä asiakkaan tarpeesta yhä tarkempiin yksityiskohtiin.
+Ylhäältä alas, epämääräisestä tarpeesta yksityiskohtiin:
+1. **Hyväksymiskriteerit** määrittelee tuoteomistaja yhdessä stakeholdereiden kanssa: mitä tarpeen omistaja odottaa näkevänsä. Ne kirjoitetaan tiketteihin jo tänä päivänä.
+2. **Ominaisuudet** ovat abstraktimpia ja teknisempiä: **ääneen lausumattomia lakeja**, joita stakeholderit eivät välttämättä tule ajatelleeksi, mutta joihin kaikki luottavat. Ne tulevat insinöörin päättelystä.
+3. **Tyypit** päättää ohjelmoija. Ajattelutapa on **turvallisuus rakenteella**: mahdottomat tilat tehdään mahdottomiksi esittää, ja testeille syntyy vakaa rajapinta.
 
-Hyväksymiskriteerit tulevat tiketistä ja vaatimusmäärittelystä. Ne ovat tuoteomistajan ja tiimin sopimus siitä, mitä tarpeen omistaja odottaa näkevänsä. Useimmilla ne ovat jo olemassa, kuten dian 12 tiketissä.
+**Kaikki kolme päätetään ennen kuin agentti aloittaa toteutuksen.**
 
-Ominaisuudet tulevat insinöörin päättelystä. Ne ovat abstraktimpia ja teknisempiä kuin kriteerit: lait, joita kukaan ei kirjoittanut tikettiin, mutta joihin kaikki luottavat. Kriteerit voivat inspiroida niitä, mutta ne eivät toista kriteerejä.
-
-Tyypit tulevat ohjelmoijalta. Ajattelutapa on turvallisuus rakenteella: suunnitellaan tyypit niin, että mahdottomia tiloja ei voi edes esittää. Samalla syntyy vakaa rajapinta, jota vastaan testit kirjoitetaan.
-
-Kaikki kolme lukitaan ennen kuin agentti aloittaa toteutuksen.
+*Katsotaan jokaista tarkemmin, alkaen hyväksymiskriteereistä.*
 -->
 
 ---
@@ -1006,15 +1002,16 @@ Konkreettiset esimerkit paljastavat kysymykset <strong>ennen</strong> kuin agent
 <!--
 [16:10–16:45]
 
-Tahti: kevyt.
+Hyväksymiskriteerit tulevat tiketistä ja vaatimusmäärittelystä, mutta **ne eivät synny itsestään**. Niihin pitää käyttää aikaa.
 
-Hyväksymiskriteerit tulevat tiketistä ja vaatimusmäärittelystä, mutta ne eivät synny itsestään. Niihin pitää käyttää aikaa.
+Tämä on BDD:n keskusteluvaihe, tekniikkana Example Mapping:
+1. Epämääräinen vaatimus pilkotaan **säännöiksi**.
+2. Jokainen sääntö saa **konkreettiset esimerkit**.
+3. Samalla löytyy **avoimia kysymyksiä**: miten pyöristetään? Voiko kahta koodia käyttää yhtä aikaa?
 
-Tämä on BDD:n keskusteluvaihe: ennen kuin skenaarioita kirjoitetaan, sovitaan säännöt, esimerkit ja avoimet kysymykset. Epämääräinen vaatimus pilkotaan säännöiksi ja konkreettisiksi esimerkeiksi. Samalla löytyy avoimia kysymyksiä: miten pyöristetään? Voiko kahta koodia käyttää yhtä aikaa?
+**Nämä ovat ratkaisevia päätöksiä, eikä agentti voi tehdä niitä puolestasi.** Jos niihin ei vastata ennen delegointia, agentti arvaa, eikä kerro arvanneensa.
 
-Nämä ovat ratkaisevia päätöksiä, eikä agentti voi tehdä niitä puolestasi. Jos niihin ei vastata ennen delegointia, agentti arvaa, eikä kerro arvanneensa.
-
-(Jos joku kysyy: tekniikka on Example Mapping, Matt Wynne. Pyöristysesimerkki: 0,97 € ja 20 % on 0,776 €, eli alas pyöristettynä 0,77 ja lähimpään 0,78.)
+*Entä ominaisuudet?*
 -->
 
 ---
@@ -1049,15 +1046,16 @@ Kriteeri kertoo, mitä asiakas <strong>näkee</strong>. Ominaisuus kertoo, mitä
 <!--
 [16:45–17:45]
 
-Tahti: kevyt. Valitse yksi laki, älä käy ruudukkoa läpi.
+Tiketissä lukee, mitä asiakas näkee. **Insinööri lisää lait, joihin muut järjestelmän osat luottavat**, vaikka kukaan ei kirjoittanut niitä tikettiin.
 
-Tiketissä lukee, mitä asiakas näkee. Insinööri lisää lait, joihin muut järjestelmän osat luottavat, vaikka kukaan ei kirjoittanut niitä tikettiin.
+Esimerkkinä korostettu **idempotenssi**: saman koodin syöttäminen uudelleen ei muuta mitään.
+1. Harva asiakas tulee ajatelleeksi sitä.
+2. Teknisesti se on oleellinen: jos frontendissä on **retry-logiikka**, se ei voi tietää, menikö ensimmäinen syöttö jo läpi backendissä.
+3. Laki on kuitenkin **päätös, ei luonnonlaki**, joten se kirjoitetaan vasta, kun päätös on tehty.
 
-Esimerkiksi idempotenssi: saman koodin syöttäminen uudelleen ei muuta mitään. Harva asiakas tulee ajatelleeksi sitä, mutta teknisesti se on oleellinen: jos frontendissä on uudelleenyrityslogiikka, se ei voi tietää, menikö ensimmäinen syöttö jo läpi backendissä. Laki on kuitenkin päätös, ei luonnonlaki, joten se kirjoitetaan vasta, kun päätös on tehty.
+**Agentti voi ehdottaa lakeja, mutta ihminen päättää**, mitkä niistä järjestelmän pitää täyttää.
 
-Agentti voi ehdottaa lakeja, mutta ihminen päättää, mitkä niistä järjestelmän pitää täyttää.
-
-(Jos joku kysyy edestakaisuudesta: laki pätee vain, jos koodi ei ollut jo korissa. Edellytykset ovat osa lakia.)
+*Entä tyypit?*
 -->
 
 ---
@@ -1114,17 +1112,19 @@ Mitä ei voi esittää, sitä <strong>agentti ei kirjoita vahingossa</strong>. R
 <!--
 [17:45–19:00]
 
-Tahti: kevyt. Yksi lause per korostus.
+Lopuksi vielä vähän konkreettisemmin tyypeistä. **Tyypit suunnitellaan niin, että vain järkeviä arvoja voi kirjoittaa.**
 
-Tyypit tulevat ohjelmoijalta: suunnitellaan ne niin, ettei virheellisiä tiloja voi esittää. Vasen tyyppi näyttää kenttä kerrallaan järkevältä.
+1. Tavallinen tyyppi: koodi, alennus, onko kampanja vanhentunut ja milloin. Jokainen kenttä näyttää järkevältä.
 
-[click] Silti tämä kääntyy: tyhjä koodi, 120 % ja vanhentunut kampanja ilman päivää.
+[click] 2. Silti tämä kääntyy: **tyhjä koodi, 120 prosentin alennus ja vanhentunut kampanja, josta ei tiedetä, milloin se vanheni.**
 
-[click] Unionityyppinä kampanja on joko aktiivinen tai vanhentunut, ja kaikki kolme virhettä ovat käännösvirheitä.
+[click] 3. Paremmin **union-tyyppinä**: kampanja on joko aktiivinen tai vanhentunut, koodi on validoitu, ja kaikki kolme virhettä ovat käännösvirheitä.
 
-[click] Rajapinta käyttää vain tuttuja tyyppejä. Vanhentuneella kampanjalla ei ole prosenttia, joten sitä ei voi käyttää alennukseen vahingossa.
+[click] 4. Rajapinta käyttää vain tuttuja tyyppejä. Vanhentuneella kampanjalla ei ole prosenttia, joten sitä ei voi käyttää alennukseen vahingossa.
 
-[click] Mitä ei voi esittää, sitä agentti ei kirjoita vahingossa.
+[click] **Mitä ei voi esittää, sitä agentti ei kirjoita vahingossa.** Rajapinta pysyy, toteutus saa vaihtua.
+
+*Kaikki tähänastinen yhdellä lauseella:*
 -->
 
 ---
@@ -1141,18 +1141,18 @@ class: brand statement
 <!--
 [19:00–19:15]
 
-Tiivistys tähänastisesta yhteen lauseeseen: määrittele järjestelmä, älä toteutusta.
+**Määrittele järjestelmä, älä toteutusta.**
 
-Kaikki kolme tarkistusta kuvaavat sitä, mitä järjestelmä lupaa: mitä voi olla olemassa, mikä pätee aina ja mitä tarpeen omistaja näkee. Yksikään niistä ei kerro, miten se tehdään. Se jää agentille, ja juuri siinä on agentin vapaus.
+Tyypit, ominaisuudet ja hyväksymiskriteerit kertovat, **mitä järjestelmä lupaa**. **Miten** se tehdään, jää agentille, ja juuri siinä on agentin vapaus.
 
-Siirtymä: toinen askel. Miten agentti eristetään tarkistuksesta?
+*Toinen askel: miten agentti eristetään tarkistuksista?*
 -->
 
 ---
 
 # Eristä agentti tarkistuksesta
 
-<p class="h1-sub"><span class="step">1 / 2</span> · Agentin työtila</p>
+<p class="h1-sub"><span class="step">1 / 3</span> · Agentin työtila</p>
 
 <div class="cols" style="margin-top: 8px; gap: 22px; align-items: start; grid-template-columns: 1.05fr 1fr">
 <div>
@@ -1215,27 +1215,29 @@ Agentti saa muuttaa toteutusta vapaasti, mutta <strong>ei sopimusta</strong>.
 <!--
 [19:15–20:15]
 
-Tahti: kevyt. Älä lue profiilia rivi riviltä.
-
-Toinen askel: eristä agentti tarkistuksesta. Ensin: missä agentti työskentelee.
-
-Agentti saa oman kopion. Se saa kirjoittaa vain toteutukseen ja dist-kansioon; sopimus, testit ja asetukset ovat vain luku -tilassa. Verkko on pois, eikä agentti voi pyytää lisäoikeuksia.
+Agentti saa **oman kopion** repositoriosta:
+1. Se saa **lukea kaikki tiedostot**.
+2. Se saa **kirjoittaa vain toteutukseen** ja dist-kansioon. Testejä, tyyppejä tai rajapintoja se ei voi muokata.
+3. **Otetaan vaikka verkkoyhteyskin pois**, eikä se voi pyytää lisäoikeuksia.
 
 Agentti ajaa testit itse ja korjaa niiden perusteella. Tämä on dian 2 silmukka, nyt meidän päättämillämme tarkistuksilla.
 
-Oikealla oikea Codex CLI -profiili. Sama onnistuu muillakin agenteilla: tiedosto-oikeuksilla, kontilla tai CI-säännöillä.
+Oikealla näkyy, miltä tämä näyttää Codex CLI:n profiilissa. Sama onnistuu muillakin koodausagenteilla: tiedosto-oikeuksilla, konteilla tai CI-säännöillä.
+
+**Agentti saa muuttaa toteutusta vapaasti, mutta ei sopimusta.** *Mitä agentille sitten sanotaan?*
 -->
 
 ---
 
 # Eristä agentti tarkistuksesta
 
-<p class="h1-sub"><span class="step">2 / 2</span> · Ohje agentille</p>
-
-<div class="cols-wide-left" style="margin-top: 8px; grid-template-columns: 1.5fr 1fr; gap: 22px">
-<div>
+<p class="h1-sub"><span class="step">2 / 3</span> · Ohje agentille</p>
 
 <div class="prompt-card">
+
+<p class="prompt-task"><b>Tehtävä:</b> Toteuta <strong>SHOP-42 ”Kampanjakoodi kassalla”</strong>. Vaatimukset ovat tiedostossa <code>README.md</code> ja sopimukset tiedostossa <code>src/contracts.ts</code>.</p>
+
+<p class="prompt-head">Säännöt</p>
 
 1. Aja ensin käännös ja testit, ja raportoi lähtötilan virheet.
 2. Toteuta olemassa olevia sopimuksia vasten. Käytä tarkistusten palautetta korjaamiseen.
@@ -1246,54 +1248,78 @@ Oikealla oikea Codex CLI -profiili. Sama onnistuu muillakin agenteilla: tiedosto
 
 </div>
 
-<p class="src">Lyhennetty ja suomennettu demorepon kehotteesta</p>
-
-</div>
-<div>
-
-<h3>Vastaa dian 3 ongelmiin</h3>
-
-<div class="map-row"><span>Sama väärinkäsitys kahdesti</span><b>Agentti ei kirjoita tarkistuksia</b></div>
-<div class="map-row"><span>Testejä voi muuttaa</span><b>Kielletty ja lukittu</b></div>
-<div class="map-row"><span>Erehtyy valmiudestaan</span><b>Ajetaan uudelleen puhtaassa kopiossa</b></div>
-
-</div>
-</div>
+<p class="src">Lyhennetty ja suomennettu demorepon kehotteesta · tehtävärivi mukautettu esimerkkiin</p>
 
 <div class="callout" style="margin-top: 14px">
 Ohje kertoo säännöt. <strong>Työtila ja tarkistus</strong> pakottavat ne.
 </div>
 
-<div class="callout teal" style="margin-top: 10px">
+<style>
+.prompt-card { margin-top: 8px; background: var(--l-gray-50); border-left: 4px solid var(--l-purple); border-radius: 8px; padding: 12px 20px 10px 18px; font-size: 16px; }
+.slidev-layout .prompt-card .prompt-task { margin: 0 0 8px; }
+.slidev-layout .prompt-card .prompt-task b { color: var(--l-purple-dark); }
+.slidev-layout .prompt-card .prompt-head { margin: 0; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--l-purple-dark); }
+.slidev-layout .prompt-card ol { margin: 2px 0 0; padding-left: 1.6em; }
+.slidev-layout .prompt-card li { margin: 3px 0; }
+</style>
+
+<!--
+[20:15–21:15]
+
+Kehote lyhennettynä ja suomennettuna. Ensin itse tehtävä: **toteuta tiketti SHOP-42**. Sen jälkeen säännöt.
+
+**Kerromme agentille säännöt, jotka tarkistusjärjestelmä joka tapauksessa pakottaa.** Silloin agentti ei tuhlaa aikaa niiden kiertämiseen, vaan keskittyy toteutukseen. Kolme kohtaa on tärkeimpiä:
+1. **Älä heikennä tarkistuksia** saadaksesi ne läpi. Testit ovat joka tapauksessa lukittuja.
+2. **Jos tarkistus on mielestäsi väärä, pysähdy ja merkitse se.** Tätä järjestelmä ei voi pakottaa: agentti voi olla oikeassa, vaatimus voi olla väärin, mutta sen ratkaisee ihminen, ei agentti hiljaa.
+3. **Tarkistukset ajetaan uudelleen.** Raportti ei ole hyväksyntä, ja agentti tietää sen etukäteen.
+
+**Ohje kertoo säännöt. Työtila ja tarkistus pakottavat ne.**
+
+*Mitä koko asetelma sitten ratkaisee?*
+-->
+
+---
+
+# Eristä agentti tarkistuksesta
+
+<p class="h1-sub"><span class="step">3 / 3</span> · Mitä asetelma ratkaisee</p>
+
+<div class="fix-grid">
+<div class="fix-row" v-click="1"><div class="fix-problem"><b>1</b>Sama väärinkäsitys kahdesti</div><div class="fix-arrow">→</div><div class="fix-solution"><strong>Agentti ei kirjoita tarkistuksia</strong><span>Ihminen päättää ne ennen delegointia</span></div></div>
+<div class="fix-row" v-click="2"><div class="fix-problem"><b>2</b>Testejä voi muuttaa</div><div class="fix-arrow">→</div><div class="fix-solution"><strong>Testit ovat vain luku -tilassa</strong><span>Käyttöoikeusprofiili lukitsee ne</span></div></div>
+<div class="fix-row" v-click="3"><div class="fix-problem"><b>3</b>Agentti erehtyy valmiudestaan</div><div class="fix-arrow">→</div><div class="fix-solution"><strong>Tarkistukset ajetaan uudelleen</strong><span>Puhtaassa kopiossa, kuten CI:ssä. Agentilta tulee mukaan vain toteutus.</span></div></div>
+</div>
+
+<p class="src" style="margin-top: 6px">Ongelmat dialta 3</p>
+
+<div class="callout teal" style="margin-top: 14px" v-click="3">
 Valmis = agentti lopetti <strong>ja</strong> riippumaton tarkistus meni läpi. Agentin oma ”testit menevät läpi” ei ratkaise.
 </div>
 
 <style>
-.prompt-card { background: var(--l-gray-50); border-left: 4px solid var(--l-purple); border-radius: 8px; padding: 10px 16px 10px 8px; font-size: 15px; }
-.slidev-layout .prompt-card ol { margin: 0; padding-left: 1.8em; }
-.slidev-layout .prompt-card li { margin: 4px 0; }
-.map-row { border-bottom: 1px solid var(--l-gray-100); padding: 7px 0; font-size: 14px; line-height: 1.3; }
-.map-row span { display: block; color: var(--l-gray-700); font-size: 12.5px; }
-.map-row b { color: var(--l-teal-deep); }
+.fix-grid { margin-top: 14px; }
+.fix-row { display: grid; grid-template-columns: 1fr 40px 1.25fr; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--l-gray-100); }
+.fix-problem { font-size: 18px; color: var(--l-gray-700); display: flex; align-items: center; gap: 12px; }
+.fix-problem b { display: inline-flex; width: 28px; height: 28px; border-radius: 50%; align-items: center; justify-content: center; font-size: 14px; border: 2px solid var(--l-gray-500); color: var(--l-gray-700); flex: none; }
+.fix-arrow { font-size: 24px; color: var(--l-teal); text-align: center; }
+.fix-solution strong { display: block; font-size: 19px; color: var(--l-teal-deep); }
+.fix-solution span { display: block; font-size: 14px; color: var(--l-gray-700); margin-top: 2px; }
 </style>
 
 <!--
-[20:15–21:55]
+[21:15–22:00]
 
-Toinen asia: mitä agentille sanotaan.
+**Muistatteko dian 3 kolme ongelmaa?** Tässä, miten asetelma ratkaisee ne.
 
-Vasemmalla agentin kehote lyhennettynä ja suomennettuna. Kolme kohtaa on tärkeimpiä:
-- Älä heikennä tarkistuksia saadaksesi ne läpi. Helpoin tie vihreään ei saa olla tarkistuksen muuttaminen.
-- Jos tarkistus on mielestäsi väärä, pysähdy ja merkitse se. Agentti voi olla oikeassa: vaatimus voi olla väärin. Mutta sen ratkaisee ihminen, ei agentti hiljaa.
-- Kerro agentille, että tarkistukset ajetaan uudelleen. Raportti ei ole hyväksyntä.
+[click] 1. Sama väärinkäsitys kahdesti: **agentti ei kirjoita tarkistuksia**. Ihminen päättää ne ennen delegointia.
 
-Oikealla sama kytkettynä dian 3 kolmeen ongelmaan. Agentin väärinkäsitys ei kulje testeihin, koska agentti ei kirjoita tarkistuksia. Testejä ei voi muuttaa, koska se on sekä kielletty että lukittu. Ja agentin omaa valmiusarviota ei tarvita, koska tarkistukset ajetaan uudelleen.
+[click] 2. Testejä voi muuttaa: testit ovat **vain luku -tilassa**, ja käyttöoikeusprofiili lukitsee ne.
 
-Ohje yksin ei riitä. Siksi työtila lukitsee tiedostot ja tarkistus ajetaan erikseen.
+[click] 3. Erehtyy valmiudestaan: **tarkistukset ajetaan uudelleen puhtaassa kopiossa**, kuten CI:ssä. Agentilta tulee mukaan vain toteutus.
 
-Lopuksi: tarkistukset ajetaan uudelleen puhtaassa kopiossa, kuten CI:ssä. Agentilta tulee mukaan vain toteutus. Valmis tarkoittaa kahta asiaa yhtä aikaa: agentti lopetti, ja riippumaton tarkistus meni läpi. Agentin raportti on hyödyllistä tietoa, mutta ei hyväksyntä.
+**Valmis tarkoittaa kahta asiaa: agentti lopetti, ja riippumaton tarkistus meni läpi.**
 
-(Jos joku kysyy, miksi puhdas kopio, kun agentti ei voi muuttaa testejä: se on toinen varmistus, joka ei riipu siitä, että käyttöoikeusprofiili on oikein. Se myös rakentaa kaiken lähdekoodista, joten agentin dist-kansio tai välimuistit eivät vaikuta tulokseen.)
+*Mihin ihmisen työ sitten siirtyy?*
 -->
 
 ---
@@ -1390,17 +1416,20 @@ Suurin osa ihmisen työstä ja huomiosta menee <strong>tarkistusten rakentamisee
 </div>
 
 <!--
-[21:55–22:40]
+[22:00–22:45]
 
-Mitä tämä tarkoittaa ihmisen työlle? Se siirtyy.
+Ihmisen työ siirtyy **toteutuksen kirjoittamisesta rakennustelineisiin**. Ennen kuin rakennusta voi pystyttää, telineiden pitää olla kunnossa:
+1. Tyypit
+2. Lait
+3. Hyväksymiskriteerit
+4. Työtilan rajat
+5. **Riippumaton tarkistus**, joka on aitauksen ainoa portti ulos
 
-Kun agentti kirjoittaa toteutuksen, ihmisen työ on rakennustelineet: tyypit, lait, hyväksymiskriteerit, työtilan rajat ja riippumaton tarkistus, joka on aitauksen ainoa portti ulos. Suurin osa työstä ja huomiosta menee sinne, ei toteutuksen kirjoittamiseen.
+**Suurin osa työstä ja huomiosta menee sinne**, ei toteutuksen kirjoittamiseen.
 
-Kuva on vähän kärjistetty: agentti istuu valmiina koneen ääressä ja kysyy, saako jo aloittaa, ja ihmiset kantavat vielä yhtä aitaelementtiä. Mutta juuri näin sen kuuluukin mennä: agentti saa aloittaa vasta, kun aitaus on pystyssä.
+Kuva on vähän kärjistetty: agentti kysyy jo, saako aloittaa, ja ihmiset kantavat vielä yhtä aitaelementtiä. Agentti saa aloittaa vasta, kun aitaus on pystyssä.
 
-Ja aitauksen sisällä agentti saa tehdä mitä haluaa. Se on agentin vapaus.
-
-Siirtymä: aitaus on valmis. Kolmas askel.
+*Ja kun aitaus on valmis?*
 -->
 
 ---
@@ -1415,13 +1444,13 @@ class: brand statement
 <p class="subtitle">Aitauksen sisällä agentti saa tehdä mitä haluaa. Ulos pääsee vain tarkistuksen portista.</p>
 
 <!--
-[22:40–22:50]
+[22:45–22:55]
 
-Kolmas askel: päästä agentti irti.
+**Aitaus on valmis. Kolmas askel: päästä agentti irti.**
 
-Robotti kysyi edellisessä kuvassa, saako se jo aloittaa. Nyt saa. Aitauksen sisällä agentti saa valita toteutuksen vapaasti ja kokeilla niin monta kertaa kuin haluaa. Ulos pääsee vain riippumattoman tarkistuksen kautta.
+Robotti kysyi edellisessä kuvassa, saako se jo aloittaa. Nyt saa. **Aitauksen sisällä agentti saa tehdä mitä haluaa**: valita toteutuksen ja kokeilla niin monta kertaa kuin haluaa. **Ulos pääsee vain tarkistuksen portista.**
 
-Siirtymä: tässä sen tulos.
+*Miltä tulos sitten näyttää?*
 -->
 
 ---
@@ -1475,17 +1504,22 @@ Siirtymä: tässä sen tulos.
 </style>
 
 <!--
-[22:50–23:35]
+[22:55–23:40]
 
-Sano ensin: "Tämä on keksitty esimerkki PR:stä, mutta tällaisia näkee."
+**Ja sitten sun pöydälle tulee tällainen PR.**
 
-Kaikki on tehty oikein. Tyypit, ominaisuustestit ja hyväksymistestit on päätetty ennen delegointia. Agentti on kirjoittanut vain toteutushakemistoon. Tarkistukset on ajettu uudelleen tuoreessa kopiossa, ja kaikki ovat vihreänä. Ja agentti sanoo taas: "Done! ✅".
+Kaikki on tehty oikein:
+1. Tyypit, ominaisuustestit ja hyväksymistestit päätettiin ennen delegointia.
+2. Agentti kirjoitti vain toteutushakemistoon.
+3. Tarkistukset ajettiin uudelleen puhtaassa kopiossa, ja kaikki on vihreää.
 
-[click] Mergeäisitkö tämän lukematta diffiä?
+Ja agentti sanoo taas: "Done! ✅"
 
-Kysy salilta, kädet ylös. Anna hetki aikaa.
+[click] **Mergeäisitkö tämän lukematta diffiä?** Kädet ylös. (tauko)
 
-Oma vastaukseni: se riippuu riskistä. Tarkistukset kertovat paljon, ja ne muuttavat sitä, mitä diffistä luetaan: enää ei tarkisteta, toimiiko alennus, vaan sitä, mitä tarkistukset eivät kata. Siihen seuraava dia.
+Oma vastaukseni: **se riippuu riskistä**. Tarkistukset kertovat paljon, ja ne muuttavat sitä, mitä diffistä luetaan: enää ei tarkisteta, toimiiko alennus, vaan sitä, **mitä tarkistukset eivät kerro**.
+
+*Mitä vihreä tulos sitten ei kerro?*
 -->
 
 ---
@@ -1506,21 +1540,19 @@ Tarkistukset eivät poista katselmointia. Ne kertovat, <strong>mihin</strong> ka
 </div>
 
 <!--
-[23:35–24:45]
+[23:40–24:50]
 
-Nopea rehellisyyskierros. Vihreä tarkoittaa: koodatut odotukset täyttyivät. Ei enempää.
+**Nopea rehellisyyskierros.** Vihreä tarkoittaa: koodatut odotukset täyttyivät. Ei enempää. Se ei kerro:
+1. **Ovatko vaatimukset oikeat.** Jos sääntö itse on väärin, kaikki tarkistukset ovat väärin samalla tavalla.
+2. **Mitä ei ole katettu.** Mitä sopimus ja lait eivät mainitse, sitä ei ole tarkistettu.
+3. **Voiko suoritukseen luottaa.** Tyyppijärjestelmän pakoteitä voi kiertää, ja siinä nojataan yhä ohjeeseen ja katselmointiin.
+4. **Onko muutos tuotantovalmis.**
+5. **Onko koodi ylläpidettävää**: helppo ymmärtää ja muuttaa, seuraako se tiimin tapoja?
+6. **Onko ratkaisu järkevä**: ei turhia riippuvuuksia, sopii arkkitehtuuriin?
 
-- Vaatimukset: jos sääntö itse on väärin, kaikki tarkistukset ovat väärin samalla tavalla.
-- Kattavuus: mitä sopimus ja lait eivät mainitse, sitä ei ole tarkistettu.
-- Luottamus suoritukseen: tyyppijärjestelmän pakoteitä voi kiertää, ja siinä nojataan yhä ohjeeseen ja katselmointiin.
-- Tuotanto: vihreä ei väitä tuotantovalmiutta.
-- Ei-toiminnalliset vaatimukset: onko koodi ylläpidettävää, helppo ymmärtää ja muuttaa, seuraako se tiimin tapoja? Onko ratkaisu järkevä: ei turhia riippuvuuksia, sopii arkkitehtuuriin?
+**Tarkistukset eivät poista katselmointia. Ne kertovat, mihin katselmointia kannattaa käyttää.**
 
-Tarkistukset eivät poista katselmointia. Ne kertovat, mihin katselmointia kannattaa käyttää.
-
-(Jos joku kysyy suorituksesta: ehdokas ajetaan samassa prosessissa kuin testit, joten se voisi esimerkiksi lopettaa testiprosessin aikaisin. Pakotiet ovat as, any ja @ts-ignore, ellei lint-sääntö valvo niitä. Asetelma rajaa vahinkoja, mutta ei suojaa vihamieliseltä koodilta.)
-
-Siirtymä: kuinka paljon huomiota yksittäinen muutos sitten ansaitsee?
+*Kuinka paljon huomiota yksittäinen muutos sitten ansaitsee?*
 -->
 
 ---
@@ -1554,21 +1586,21 @@ Mitoita ihmisen huomio <strong>muutoksen</strong> mukaan, ei sen mukaan, kuka se
 </style>
 
 <!--
-[24:45–26:45]
+[24:50–26:50]
 
-Viimeinen ajatus ennen yhteenvetoa: kuinka paljon ihmisen huomiota yksittäinen muutos ansaitsee?
+Kuinka paljon ihmisen huomiota yksittäinen muutos ansaitsee? **Ei aina samaa määrää.** Neljä tekijää:
+1. **Verifioitavuus**: kattavatko tarkistukset muutoksen? Jos sitä ei voi tarkistaa koneellisesti, se vaatii enemmän ihmisen huomiota.
+2. **Vaikutusalue**: yksi sisäinen moduuli vai maksut, tietoturva tai luottamuksellinen data?
+3. **Peruttavuus**: riittääkö revert tai feature flagin kytkeminen pois, vai onko kyse tunteja kestävästä migraatiosta tai asiakkaille jo lähteneestä viestistä?
+4. **Uutuus**: toistuva muutos, josta agentti löytää koodista esimerkkejä, vai täysin uusi arkkitehtuuripäätös?
 
-Ei aina samaa määrää. Neljä kysymystä:
-- Verifioitavuus: kattavatko tarkistukset muutoksen, vai onko siinä semantiikkaa, jota ei voi tarkistaa koneellisesti?
-- Vaikutusalue: mitä rikkoutuu, jos muutos on väärin? Yksi sisäinen moduuli vai maksut ja asiakkaiden data?
-- Peruttavuus: voiko muutoksen perua yhdellä revertillä tai feature flagilla, vai onko se tietokantamigraatio tai jo lähetetty sähköposti?
-- Uutuus: onko tämä tuttu, toistuva muutos vai uusi arkkitehtuuripäätös?
+Mitä enemmän oikealle, sitä enemmän ihmisen huomiota.
 
-Mitä enemmän oikealle, sitä enemmän ihmisen huomiota: tarkempi katselmointi, vaiheistettu käyttöönotto, canary-julkaisu, toinen katselmoija.
+**Tämä vastaa PR-dian kysymykseen:** mergeäisitkö lukematta? Riippuu siitä, missä kohtaa näitä janoja muutos on.
 
-Tämä vastaa myös PR-dian kysymykseen. Mergeäisitkö lukematta? Riippuu siitä, missä kohtaa näitä janoja muutos on.
+Ja sama vastaa alun rajaukseen: **alennusesimerkki oli tarkoituksella pieni**. Samat neljä tekijää kertovat, kuinka paljon tarkistuksia kannattaa rakentaa ennen delegointia.
 
-Ja sama vastaa alun rajaukseen: alennusesimerkki oli tarkoituksella pieni. Samat neljä kysymystä kertovat myös, kuinka paljon tarkistuksia kannattaa rakentaa ennen delegointia. Pieni, helposti peruttava muutos ei tarvitse kaikkea tätä. Maksuja koskeva muutos tarvitsee.
+*Kolme askelta tiivistettynä:*
 -->
 
 ---
@@ -1595,14 +1627,11 @@ class: brand
 <img class="logo" src="/loihde-white.svg" alt="Loihde" />
 
 <!--
-[26:45–27:15, sitten kysymykset]
+[26:50–27:20, sitten kysymykset]
 
-Kolme askelta tiivistettynä:
-1. Määrittele järjestelmä, älä toteutusta: tyypit, ominaisuudet ja hyväksymiskriteerit kertovat, mitä järjestelmä lupaa.
-2. Eristä agentti tarkistuksesta: agentti kirjoittaa vain toteutusta, ja tarkistus ajetaan uudelleen puhtaassa kopiossa.
-3. Päästä agentti irti: aitauksen sisällä agentti saa tehdä mitä haluaa.
+1. **Määrittele järjestelmä, älä toteutusta.** Tyypit, ominaisuudet ja hyväksymiskriteerit kertovat, mitä järjestelmä lupaa.
+2. **Eristä agentti tarkistuksesta.** Agentti kirjoittaa vain toteutusta, ja tarkistus ajetaan uudelleen puhtaassa kopiossa.
+3. **Päästä agentti irti.** Aitauksen sisällä agentti saa tehdä mitä haluaa.
 
-Kiitos! Kysymyksiä?
-
-(Jos aikaa jää: "Älä pyydä agenttia muistamaan. Tee unohtamisesta virhe." Jokainen tarkistukseksi kirjoitettu laki on yksi asia vähemmän, jonka agentin pitää muistaa.)
+**Kiitos! Kysymyksiä?**
 -->
